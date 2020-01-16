@@ -16,8 +16,8 @@ class MainView: UIView {
         return view
     } ()
     
-    lazy var profileView: ProfileView = {
-        let view = ProfileView()
+    lazy var contentsView: ContentsView = {
+        let view = ContentsView()
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view

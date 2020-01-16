@@ -26,6 +26,7 @@
 		87D60F0323CE81C10064DA0A /* bottomMenuSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F0223CE81C10064DA0A /* bottomMenuSetView.swift */; };
 		87D60F0523CE8B150064DA0A /* ProfilePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F0423CE8B150064DA0A /* ProfilePictureView.swift */; };
 		87D60F0723CE8B880064DA0A /* ProfileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F0623CE8B880064DA0A /* ProfileInfoView.swift */; };
+		87D60F0923D11EB90064DA0A /* ContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F0823D11EB90064DA0A /* ContentsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		87D60F0223CE81C10064DA0A /* bottomMenuSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bottomMenuSetView.swift; sourceTree = "<group>"; };
 		87D60F0423CE8B150064DA0A /* ProfilePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureView.swift; sourceTree = "<group>"; };
 		87D60F0623CE8B880064DA0A /* ProfileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoView.swift; sourceTree = "<group>"; };
+		87D60F0823D11EB90064DA0A /* ContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 				87D60F0223CE81C10064DA0A /* bottomMenuSetView.swift */,
 				87D60F0423CE8B150064DA0A /* ProfilePictureView.swift */,
 				87D60F0623CE8B880064DA0A /* ProfileInfoView.swift */,
+				87D60F0823D11EB90064DA0A /* ContentsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -245,6 +248,7 @@
 				87D60F0523CE8B150064DA0A /* ProfilePictureView.swift in Sources */,
 				8761732723CC0688007AB119 /* TopMenuSetView.swift in Sources */,
 				8761731D23CBFFDD007AB119 /* MainViewController.swift in Sources */,
+				87D60F0923D11EB90064DA0A /* ContentsView.swift in Sources */,
 				87D60F0323CE81C10064DA0A /* bottomMenuSetView.swift in Sources */,
 				8761731923CBFFBB007AB119 /* LogoView.swift in Sources */,
 				8761730F23CBFF47007AB119 /* InitView.swift in Sources */,

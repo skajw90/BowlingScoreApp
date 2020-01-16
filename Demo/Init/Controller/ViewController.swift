@@ -65,13 +65,14 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
         initView.passwordInputBar.delegate = self
     }
     
+    // InitView delegate functions
     func login() {
         print("login")
         // send data to server login id,
         // checked, and if existed id go main
         // otherwise, show dialog or message box to user
         // that id or password does not match
-        
+        removeViews()
         let controller = MainViewController()
         add(controller)
     }
@@ -84,6 +85,7 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
         print("user info")
     }
     
+    // textfield delegate functions
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.backgroundColor = .lightGray
         initView.isEditing = true
@@ -123,6 +125,16 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
+    
+    func removeViews() {
+           initView.backgroundView.removeFromSuperview()
+           initView.logoView.removeFromSuperview()
+           initView.idInputBar.removeFromSuperview()
+           initView.passwordInputBar.removeFromSuperview()
+           initView.loginBtnView.removeFromSuperview()
+           initView.registerBtnView.removeFromSuperview()
+           initView.findUserInfo.removeFromSuperview()
+       }
 }
 
 // extension class for uiview controller to add and remove view controller

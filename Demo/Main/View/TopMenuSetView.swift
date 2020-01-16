@@ -50,6 +50,7 @@ class TopMenuSetView: UIView {
         return btn
     } ()
     
+    
     @objc func menuPrevBtnHandler(sender: Any) {
         print("menuPrev Clicked")
         delegate!.openNewGame()
