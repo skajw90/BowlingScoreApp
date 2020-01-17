@@ -84,18 +84,21 @@ class MainViewController: UIViewController, BottomMenuSetViewDelegate, TopMenuSe
     func openGraph() {
         print("action open graph")
         selectedContents = .graph
+        mainView.contentsView.switchViews()
         // switch graph view
     }
     
     func openAnalysis() {
         print("action open Analysis")
         selectedContents = .analysis
+        mainView.contentsView.switchViews()
         // switch analysis view
     }
     
     func openSetting() {
         print("action open setting")
         selectedContents = .setting
+        mainView.contentsView.switchViews()
         // switch setting view
     }
 }

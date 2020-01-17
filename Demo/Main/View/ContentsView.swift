@@ -27,25 +27,36 @@ class ContentsView: UIView {
     var dataSource: ContentsViewDataSource?
     var curType: contentsType = .profile
     var curView: UIView = ProfileView()
-    lazy var profileView: ProfileView = {
-        let view = ProfileView()
-        //view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    } ()
-    
-    lazy var newGameView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .black
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    } ()
-    
-    lazy var recordView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .black
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    } ()
+//    var newGameView: NewGameView = {
+//        let view = NewGameView()
+//        view.backgroundColor = .red
+//        return view
+//    } ()
+//    var calendarView: CalendarView = {
+//        let view = CalendarView()
+//        view.backgroundColor = .orange
+//        return view
+//    } ()
+//    var recordView: RecordView = {
+//        let view = RecordView()
+//        view.backgroundColor = .yellow
+//        return view
+//    } ()
+//    var graphView: GraphView = {
+//        let view = GraphView()
+//        view.backgroundColor = .green
+//        return view
+//    } ()
+//    var analysisView: AnalysisView = {
+//        let view = AnalysisView()
+//        view.backgroundColor = .blue
+//        return view
+//    } ()
+//    var settingView: SettingView = {
+//        let view = SettingView()
+//        view.backgroundColor = .purple
+//        return view
+//    } ()
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -57,13 +68,21 @@ class ContentsView: UIView {
         curView.removeFromSuperview()
         switch dataSource!.getContentsType() {
         case .profile:
-            curView = profileView
+            curView = ProfileView()
         case .newGame:
-            curView = newGameView
+            curView = NewGameView()
+        case .calendar:
+            curView = CalendarView()
         case .record:
-            curView = recordView
+            curView = RecordView()
+        case .graph:
+            curView = GraphView()
+        case .analysis:
+            curView = AnalysisView()
+        case .setting:
+            curView = SettingView()
         default:
-            curView = profileView
+            curView = ProfileView()
         }
         setNeedsDisplay()
     }
