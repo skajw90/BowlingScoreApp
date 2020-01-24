@@ -9,6 +9,7 @@
 import UIKit
 
 protocol TopMenuSetViewDelegate {
+    func openProfile()
     func openNewGame()
     func openCalendar()
     func openCamera()
@@ -17,13 +18,24 @@ protocol TopMenuSetViewDelegate {
 class TopMenuSetView: UIView {
     var delegate: TopMenuSetViewDelegate?
     
+    lazy var profilePreview: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("Profile", for: .normal)
+        btn.backgroundColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
+        btn.layer.borderWidth = 1
+        btn.layer.borderColor = UIColor.red.cgColor
+        btn.addTarget(self, action: #selector(profilePrevBtnHandler), for: UIControl.Event.touchDown)
+        addSubview(btn)
+        return btn
+    } ()
+    
     lazy var newGamePreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("NEW", for: .normal)
         btn.backgroundColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
         btn.layer.borderWidth = 1
         btn.layer.borderColor = UIColor.red.cgColor
-        btn.addTarget(self, action: #selector(menuPrevBtnHandler), for: UIControl.Event.touchDown)
+        btn.addTarget(self, action: #selector(newGamePrevBtnHandler), for: UIControl.Event.touchDown)
         addSubview(btn)
         return btn
     } ()
@@ -50,9 +62,13 @@ class TopMenuSetView: UIView {
         return btn
     } ()
     
+    @objc func profilePrevBtnHandler(sender: Any) {
+        print("newGamePrev Clicked")
+        delegate!.openProfile()
+    }
     
-    @objc func menuPrevBtnHandler(sender: Any) {
-        print("menuPrev Clicked")
+    @objc func newGamePrevBtnHandler(sender: Any) {
+        print("newGamePrev Clicked")
         delegate!.openNewGame()
     }
     
@@ -70,9 +86,11 @@ class TopMenuSetView: UIView {
         super.layoutSubviews()
         
         var rect = bounds
+        (profilePreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
+        
         (newGamePreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
         
-        (calendarPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.5, from: .minXEdge)
+        (calendarPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
         
         (cameraPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
     }

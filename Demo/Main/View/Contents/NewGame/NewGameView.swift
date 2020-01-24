@@ -1,5 +1,5 @@
 //
-//  CalendarView.swift
+//  newGameView.swift
 //  Demo
 //
 //  Created by Jiwon Nam on 1/16/20.
@@ -8,10 +8,18 @@
 
 import UIKit
 
-class CalendarView: UIView {
+class NewGameView: UIView {
+    lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .black
+        label.textAlignment = .center
+        return label
+    } ()
+    
     lazy var sampleColor: UIView = {
         let view = UIView()
-        view.backgroundColor = .orange
+        view.backgroundColor = .red
         addSubview(view)
         return view
     } ()

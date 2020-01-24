@@ -8,65 +8,25 @@
 
 import UIKit
 
-enum contentsType {
-    case profile
-    case newGame
-    case camera
-    case calendar
-    case record
-    case graph
-    case analysis
-    case setting
-}
-
-protocol ContentsViewDataSource {
-    func getContentsType() -> contentsType
-}
+//protocol ContentsViewDataSource {
+//    func getContentsType() -> ContentsType
+//}
 
 class ContentsView: UIView {
-    var dataSource: ContentsViewDataSource?
-    var curType: contentsType = .profile
-    var curView: UIView = ProfileView()
-//    var newGameView: NewGameView = {
-//        let view = NewGameView()
-//        view.backgroundColor = .red
-//        return view
-//    } ()
-//    var calendarView: CalendarView = {
-//        let view = CalendarView()
-//        view.backgroundColor = .orange
-//        return view
-//    } ()
-//    var recordView: RecordView = {
-//        let view = RecordView()
-//        view.backgroundColor = .yellow
-//        return view
-//    } ()
-//    var graphView: GraphView = {
-//        let view = GraphView()
-//        view.backgroundColor = .green
-//        return view
-//    } ()
-//    var analysisView: AnalysisView = {
-//        let view = AnalysisView()
-//        view.backgroundColor = .blue
-//        return view
-//    } ()
-//    var settingView: SettingView = {
-//        let view = SettingView()
-//        view.backgroundColor = .purple
-//        return view
-//    } ()
-    
+    //var dataSource: ContentsViewDataSource?
+    var curType: ContentsType = .profile
+    var curView: UIView = UIView()
+
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+        curView.backgroundColor = .white
         curView.frame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
         addSubview(curView)
     }
     
-    func switchViews() {
-        curView.removeFromSuperview()
-        switch dataSource!.getContentsType() {
+    func switchViews(selectedType: ContentsType) {
+        let preView = curView
+        switch selectedType {
         case .profile:
             curView = ProfileView()
         case .newGame:
@@ -82,8 +42,23 @@ class ContentsView: UIView {
         case .setting:
             curView = SettingView()
         default:
-            curView = ProfileView()
+            curView = UIView()
         }
+        preView.swapViews(next: curView)
+        
         setNeedsDisplay()
     }
 }
+
+extension UIView {
+    func swapViews(next: UIView) {
+        //self.frame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self!.transform = CGAffineTransform(translationX: -self!.bounds.maxX, y: 0)
+            print("\(self!.center)")
+            next.transform = CGAffineTransform(translationX: -self!.bounds.maxX, y: 0)} , completion: { _ in
+                self.removeFromSuperview()
+        })
+    }
+}
+

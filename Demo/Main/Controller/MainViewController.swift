@@ -8,9 +8,21 @@
 
 import UIKit
 
-class MainViewController: UIViewController, BottomMenuSetViewDelegate, TopMenuSetViewDelegate, ContentsViewDataSource {
+class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPreviewDelegate {
+
+    // add profile to initialize each controllers
+    var menuSetController: MenuSetController?
     
-    var selectedContents: contentsType = .profile
+    var userData: UserData = UserData(userID: "TEST", overall: nil, dataFiles: nil, joinedClub: nil)
+    var userSetting = (0, 0 , IntervalFormat.year)
+    
+    func loadUserInfo() {
+        
+    }
+    
+    func saveUserInfo() {
+        
+    }
     
     var mainView: MainView {
         return view as! MainView
@@ -25,81 +37,43 @@ class MainViewController: UIViewController, BottomMenuSetViewDelegate, TopMenuSe
         mainView.frame = view.frame
         
         NSLayoutConstraint.activate([
-            mainView.topMenuSetView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainView.menuPreview.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainView.menuPreview.leftAnchor.constraint(equalTo: view.leftAnchor),
+            mainView.menuPreview.rightAnchor.constraint(equalTo: view.rightAnchor),
+            mainView.menuPreview.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.08),
+            
+            mainView.topMenuSetView.topAnchor.constraint(equalTo: mainView.menuPreview.bottomAnchor),
             mainView.topMenuSetView.leftAnchor.constraint(equalTo: view.leftAnchor),
             mainView.topMenuSetView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            mainView.topMenuSetView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.1),
+            mainView.topMenuSetView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.08),
             
             mainView.contentsView.topAnchor.constraint(equalTo: mainView.topMenuSetView.bottomAnchor),
             mainView.contentsView.leftAnchor.constraint(equalTo: view.leftAnchor),
             mainView.contentsView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            mainView.contentsView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.8),
+            mainView.contentsView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.76),
             
             mainView.bottomMenuSetView.topAnchor.constraint(equalTo: mainView.contentsView.bottomAnchor),
             mainView.bottomMenuSetView.leftAnchor.constraint(equalTo: view.leftAnchor),
             mainView.bottomMenuSetView.rightAnchor.constraint(equalTo: view.rightAnchor),
             mainView.bottomMenuSetView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-        
-        mainView.bottomMenuSetView.delegate = self
-        mainView.topMenuSetView.delegate = self
-        mainView.contentsView.dataSource = self
-        mainView.contentsView.switchViews()
-    }
-    
-    // contentsView dataSource
-    func getContentsType() -> contentsType {
-        return selectedContents
+        menuSetController = MenuSetController(mainView: mainView)
+        mainView.menuPreview.delegate = self
+        menuSetController!.dataSource = self
+        menuSetController!.openProfile()
     }
     
     // top Menu delegate functions
-    func openNewGame() {
-        print("action open new game")
-        selectedContents = .newGame
-        mainView.contentsView.switchViews()
-        // profileView switch to newGameView
+    func openMenu() {
+        
     }
     
-    func openCalendar() {
-        print("action open calendar")
-        selectedContents = .calendar
-        mainView.contentsView.switchViews()
-        // previous View switch to calendar view
+    func getUserID() -> String {
+        return userData.userID!
     }
     
-    func openCamera() {
-        print("action open camera")
-        selectedContents = .camera
-        mainView.contentsView.switchViews()
-        // start camera module
-    }
-    // bottom Menu delegate functions
-    func openRecord() {
-        print("action open record")
-        selectedContents = .record
-        mainView.contentsView.switchViews()
-        // switch record view
-    }
-    
-    func openGraph() {
-        print("action open graph")
-        selectedContents = .graph
-        mainView.contentsView.switchViews()
-        // switch graph view
-    }
-    
-    func openAnalysis() {
-        print("action open Analysis")
-        selectedContents = .analysis
-        mainView.contentsView.switchViews()
-        // switch analysis view
-    }
-    
-    func openSetting() {
-        print("action open setting")
-        selectedContents = .setting
-        mainView.contentsView.switchViews()
-        // switch setting view
+    func getUserOverall() -> ScoreFormat? {
+        return userData.overall
     }
 }
 

@@ -9,6 +9,14 @@
 import UIKit
 
 class MainView: UIView {
+    lazy var menuPreview: MenuPreview = {
+        let view = MenuPreview()
+        view.backgroundColor = .blue
+        view.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(view)
+        return view
+    } ()
+    
     lazy var topMenuSetView: TopMenuSetView = {
         let view = TopMenuSetView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -25,7 +33,6 @@ class MainView: UIView {
     
     lazy var bottomMenuSetView: BottomMenuSetView = {
         let view = BottomMenuSetView()
-        view.backgroundColor = .lightGray
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view
