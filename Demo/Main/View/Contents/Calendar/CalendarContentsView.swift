@@ -8,13 +8,19 @@
 
 import UIKit
 
+protocol CalendarContentsViewDelegate {
+    func changeCalendar(isPrev: Bool)
+    func openEditGame(pos: Int)
+}
+
 protocol CalendarContentsViewDataSource {
     func getSelectedCell() -> Int?
     func getCalendarData() -> [Int]
 }
 
-class CalendarContentsView: UIView, CalendarGridViewDataSource {
+class CalendarContentsView: UIView, CalendarGridViewDataSource, CalendarGridViewDelegate {
     var dataSource: CalendarContentsViewDataSource?
+    var delegate: CalendarContentsViewDelegate?
     
     lazy var calendarWeekView: CalendarWeekView = {
         let view = CalendarWeekView()
@@ -28,6 +34,7 @@ class CalendarContentsView: UIView, CalendarGridViewDataSource {
         let view = CalendarGridView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.dataSource = self
+        view.delegate = self
         addSubview(view)
         return view
     } ()
@@ -50,5 +57,13 @@ class CalendarContentsView: UIView, CalendarGridViewDataSource {
     
     func getSelectedCell() -> Int? {
         return dataSource!.getSelectedCell()
+    }
+    
+    func changeCalendar(isPrev: Bool) {
+        delegate!.changeCalendar(isPrev: isPrev)
+    }
+    
+    func openEditGames(pos: Int) {
+        delegate!.openEditGame(pos: pos)
     }
 }

@@ -13,13 +13,14 @@ protocol CalendarTopViewDelegate {
 }
 
 protocol CalendarTopViewDataSoucre {
-    func getSelectedDate() -> (Int, Int)
+    func getCurrentDate() -> CalendarData
 }
 
 class CalendarTopView: UIView {
     var selectedDate: Date?
     var dataSource: CalendarTopViewDataSoucre?
     var delegate: CalendarTopViewDelegate?
+    var isCalendar = false
     
     lazy var dateLabel: UILabel = {
         let label = UILabel()
@@ -56,14 +57,16 @@ class CalendarTopView: UIView {
     }
     
     func updateDateLabel() {
-        let date = dataSource!.getSelectedDate()
-        let year = date.0
-        let month = date.1
-        dateLabel.text = "\(month)월 \(year)"
+        let date = dataSource!.getCurrentDate()
+        let year = date.year!
+        let month = date.month!
+        let day = isCalendar ? "" : "\(date.day!)일"
+        dateLabel.text = "\(month)월 \(day) \(year)년"
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        backgroundColor = .orange
         var rect = bounds
         
         (leftBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)

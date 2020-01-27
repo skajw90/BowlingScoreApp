@@ -10,16 +10,17 @@ import UIKit
 
 protocol CalendarViewDelegate {
     func setCalendar(index: Int)
+    func openEditGame(pos: Int)
 }
 
 protocol CalendarViewDataSource {
-    func getCalendarData() -> ([Int], [Int]?)
-    func getSelectedData() -> (Int, Int)
+    func getCalendar() -> [Int]
+    func getCurrentDate() -> CalendarData
     func getMonthlyData() -> ScoreFormat
     func getSelectedCell() -> Int?
 }
 
-class CalendarView: UIView, CalendarContentsViewDataSource, CalendarTopViewDelegate, CalendarTopViewDataSoucre, CalendarBottomViewDataSource {
+class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsViewDelegate, CalendarTopViewDelegate, CalendarTopViewDataSoucre, CalendarBottomViewDataSource {
     var dataSource: CalendarViewDataSource?
     var delegate: CalendarViewDelegate?
     
@@ -28,6 +29,7 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarTopViewDeleg
         view.translatesAutoresizingMaskIntoConstraints = false
         view.dataSource = self
         view.delegate = self
+        view.isCalendar = true
         addSubview(view)
         return view
     } ()
@@ -36,6 +38,7 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarTopViewDeleg
         let view = CalendarContentsView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.dataSource = self
+        view.delegate = self
         addSubview(view)
         return view
     } ()
@@ -53,16 +56,14 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarTopViewDeleg
     }
     
     func updateAll() {
-        calendarContentsView.calendarGridView.updateCells(map: dataSource!.getCalendarData().0)
+        calendarContentsView.calendarGridView.updateCells(map: dataSource!.getCalendar())
         calendarTopView.updateDateLabel()
         calendarBottomView.setMonthlyScore()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        backgroundColor = .orange
-        
+                
         var rect = bounds
         
         (calendarTopView.frame, rect) = rect.divided(atDistance: frame.maxY / 10, from: .minYEdge)
@@ -73,11 +74,11 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarTopViewDeleg
     }
     
     func getCalendarData() -> [Int] {
-        return dataSource!.getCalendarData().0
+        return dataSource!.getCalendar()
     }
     
-    func getSelectedDate() -> (Int, Int) {
-        return dataSource!.getSelectedData()
+    func getCurrentDate() -> CalendarData {
+        return dataSource!.getCurrentDate()
     }
     
     func setCalendar(index: Int) {
@@ -91,5 +92,13 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarTopViewDeleg
     
     func getSelectedCell() -> Int? {
         return dataSource!.getSelectedCell()
+    }
+    
+    func changeCalendar(isPrev: Bool) {
+        delegate!.setCalendar(index: isPrev ? -1 : 1)
+    }
+    
+    func openEditGame(pos: Int) {
+        delegate!.openEditGame(pos: pos)
     }
 }

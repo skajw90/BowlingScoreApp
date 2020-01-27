@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol CalendarGridViewDelegate {
+    func changeCalendar(isPrev: Bool)
+    func openEditGames(pos: Int)
+}
+
 protocol CalendarGridViewDataSource {
     func getSelectedCell() -> Int?
     func getCalendarData() -> [Int]
@@ -15,8 +20,12 @@ protocol CalendarGridViewDataSource {
 
 class CalendarGridView: UIView {
     var dataSource: CalendarGridViewDataSource?
-    var selectedCell: CalendarCell?
+    var delegate: CalendarGridViewDelegate?
+    var todayCell: CalendarCell?
+    var selectedCell: Int?
+    var firstTouchedCell: Int?
     var cells: [CalendarCell] = []
+    var map: [Int] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,7 +60,12 @@ class CalendarGridView: UIView {
         cells = []
     }
     
+    func updateCells() {
+        updateCells(map: map)
+    }
+    
     func updateCells(map: [Int]) {
+        self.map = map
         initializeCells()
         let width = bounds.width / 7
         let height = bounds.height / 6
@@ -77,21 +91,45 @@ class CalendarGridView: UIView {
             }
         }
         if let cellIndex = dataSource!.getSelectedCell() {
-            selectedCell = cells[cellIndex]
-            selectedCell!.isToday = true
+            todayCell = cells[cellIndex]
+            todayCell!.isToday = true
         }
-        else if let cell = selectedCell {
+        else if let cell = todayCell {
             cell.isToday = false
+        }
+        if let selectedCell = selectedCell {
+            cells[selectedCell].backgroundColor = .lightGray
+            cells[selectedCell].alpha = 0.7
         }
     }
     
-    var touchedCell: Int?
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        let location = touches.first!.location(in: self)
+        firstTouchedCell = getTouchedCell(location: location)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        let location = touches.first!.location(in: self)
+        let endLocation = getTouchedCell(location: location)
+        if firstTouchedCell == endLocation {
+            if let selectedCell = selectedCell {
+                if selectedCell == firstTouchedCell {
+                    self.selectedCell = nil
+                    print("open edit games")
+                    delegate!.openEditGames(pos: selectedCell)
+                }
+                else {
+                    self.selectedCell = firstTouchedCell
+                }
+            }
+            else {
+                self.selectedCell = firstTouchedCell
+            }
+            updateCells()
+        }
+    }
+    
+    func getTouchedCell(location: CGPoint) -> Int {
+        return Int(location.x / (bounds.maxX / 7)) + Int(location.y / (bounds.maxY / 6)) * 7
     }
 }

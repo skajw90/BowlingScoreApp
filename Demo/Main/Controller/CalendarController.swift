@@ -8,27 +8,31 @@
 
 import UIKit
 
+protocol CalendarControllerDelegate {
+    func openEditGame(date: CalendarData)
+}
+
 protocol CalendarControllerDataSource {
-    func getUserData(year: Int, month: Int, day: Int) -> ScoreFormat
-    func getUserData(from: Int, to: Int, format: IntervalFormat) -> ScoreFormat
+    func getCurrentDate() -> CalendarData
+    func getUserData(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
 }
 
 class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
-    
+   
     var dataSource: CalendarControllerDataSource?
+    var delegate: CalendarControllerDelegate?
     var calendarView: CalendarView?
-    var curDate: (Int, Int, Int, Int)
+    var currentDate: CalendarData
     var todayCell: Int?
     var curCalendarMap: [Int] = []
     
-    init(view: CalendarView, selectedDate: Date) {
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: selectedDate)
-        let month = calendar.component(.month, from: selectedDate)
-        let day = calendar.component(.day, from: selectedDate)
-        let weekday = calendar.component(.weekday, from: selectedDate)
-        curDate = (year, month, day, weekday)
-        setDaysList(year: year, month: month, day: day)
+    init() {
+        currentDate = CalendarData()
+    }
+    
+    init(view: CalendarView, date: CalendarData) {
+        currentDate = date
+        setDaysList(year: currentDate.year!, month: currentDate.month!, day: currentDate.day!)
         
         view.delegate = self
         view.dataSource = self
@@ -48,17 +52,16 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         return calendar.dateComponents([.day], from: interval.start, to: interval.end).day!
     }
     
-    func getFirstDayPos(year: Int, month: Int) -> Int {
+    func getWeekDay(year: Int, month: Int, day: Int) -> Int {
         var dateComponents = DateComponents()
         dateComponents.year = year
         dateComponents.month = month
+        dateComponents.day = day
 
         let calendar = Calendar.current
         let datez = calendar.date(from: dateComponents)
         // change .month into .year to see the days available in the year
-        let interval = calendar.dateInterval(of: .month, for: datez!)!
-        
-        return calendar.dateComponents([.weekday], from: interval.start).weekday!
+        return calendar.dateComponents([.weekday], from: datez!).weekday!
     }
     
     func setDaysList(year: Int, month: Int, day: Int?) {
@@ -68,8 +71,7 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         if month == 1 {
             prevNumOfDays = getNumOfDays(year: year - 1, month: 12)
         }
-        let firstDayPos = getFirstDayPos(year: year, month: month) - 1
-        
+        let firstDayPos = getWeekDay(year: year, month: month, day: 1) - 1
         var isPrevMonth = true
         var monthCount: Int = prevNumOfDays - (firstDayPos - 1)
         for i in 0 ..< 42 {
@@ -95,38 +97,57 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
     }
     
     func setCalendar(index: Int) {
+        (currentDate.month!, currentDate.year!) = getMonthAndYear(index: index)
         
-        curDate.1 += index
-        if curDate.1 > 12 {
-            curDate.1 = 1
-            curDate.0 += 1
-        }
-        else if curDate.1 < 1 {
-            curDate.1 = 12
-            curDate.0 -= 1
-        }
         var day: Int?
-        if curDate.0 == Calendar.current.component(.year, from: Date()) && curDate.1 == Calendar.current.component(.month, from: Date()) {
+        if currentDate.year! == Calendar.current.component(.year, from: Date()) && currentDate.month! == Calendar.current.component(.month, from: Date()) {
             day = Calendar.current.component(.day, from: Date())
         }
-        setDaysList(year: curDate.0, month: curDate.1, day: day)
+        setDaysList(year: currentDate.year!, month: currentDate.month!, day: day)
         calendarView!.updateAll()
     }
     
-    func getCalendarData() -> ([Int], [Int]?) {
-        return (curCalendarMap, nil)
+    func getMonthAndYear(index: Int) -> (Int, Int) {
+        var curMonth = currentDate.month! + index
+        var curYear = currentDate.year!
+        if curMonth > 12 {
+            curMonth = 1
+            curYear += index
+        }
+        else if curMonth < 1 {
+            curMonth = 12
+            curYear += index
+        }
+        return (curMonth, curYear)
     }
     
-    func getSelectedData() -> (Int, Int) {
-        return (curDate.0, curDate.1)
+    func getCalendar() -> [Int] {
+        return curCalendarMap
+    }
+    
+    func getCurrentDate() -> CalendarData {
+        return currentDate
     }
     
     func getMonthlyData() -> ScoreFormat {
-        return dataSource!.getUserData(from: curDate.1, to: curDate.1, format: .month)
+        return dataSource!.getUserData(date: dataSource!.getCurrentDate(), interval: .month)
     }
     
     func getSelectedCell() -> Int? {
-        
         return todayCell
+    }
+    
+    func openEditGame(pos: Int) {
+        var monthAndYear = (currentDate.month!, currentDate.year!)
+        if pos < 7 && curCalendarMap[pos] > 20 {
+            monthAndYear = getMonthAndYear(index: -1)
+        }
+        else if pos > 35 && curCalendarMap[pos] < 10 {
+            monthAndYear = getMonthAndYear(index: 1)
+        }
+        
+        let selectedDate = CalendarData(year: monthAndYear.1, month: monthAndYear.0, day: curCalendarMap[pos], weekday: WeekDay(rawValue: getWeekDay(year: monthAndYear.1, month: monthAndYear.0, day: curCalendarMap[pos])))
+        
+        delegate!.openEditGame(date: selectedDate)
     }
 }

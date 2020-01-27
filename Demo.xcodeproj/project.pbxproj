@@ -49,6 +49,8 @@
 		87D60F3923DA99FF0064DA0A /* IntervalFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3823DA99FF0064DA0A /* IntervalFormat.swift */; };
 		87D60F3B23DAA24A0064DA0A /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3A23DAA24A0064DA0A /* ProfileController.swift */; };
 		87D60F3D23DAA7B30064DA0A /* ProfileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3C23DAA7B30064DA0A /* ProfileInfo.swift */; };
+		87D60F4023DBB2860064DA0A /* GameScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3F23DBB2860064DA0A /* GameScore.swift */; };
+		87D60F4223DBB42F0064DA0A /* NewGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F4123DBB42F0064DA0A /* NewGameController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +98,8 @@
 		87D60F3823DA99FF0064DA0A /* IntervalFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalFormat.swift; sourceTree = "<group>"; };
 		87D60F3A23DAA24A0064DA0A /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		87D60F3C23DAA7B30064DA0A /* ProfileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfo.swift; sourceTree = "<group>"; };
+		87D60F3F23DBB2860064DA0A /* GameScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScore.swift; sourceTree = "<group>"; };
+		87D60F4123DBB42F0064DA0A /* NewGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +200,7 @@
 				87D60F3023D7C30F0064DA0A /* ContentTypes.swift */,
 				87D60F3623DA93790064DA0A /* UserData.swift */,
 				87D60F3823DA99FF0064DA0A /* IntervalFormat.swift */,
+				87D60F3F23DBB2860064DA0A /* GameScore.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -223,6 +228,7 @@
 				87D60F2C23D7C00D0064DA0A /* MenuSetController.swift */,
 				87D60F2A23D7BB5F0064DA0A /* CalendarController.swift */,
 				87D60F3A23DAA24A0064DA0A /* ProfileController.swift */,
+				87D60F4123DBB42F0064DA0A /* NewGameController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -366,9 +372,11 @@
 				87D60F1523D130F80064DA0A /* NewGameView.swift in Sources */,
 				8761731923CBFFBB007AB119 /* LogoView.swift in Sources */,
 				87D60F1F23D7AC760064DA0A /* CalendarGridView.swift in Sources */,
+				87D60F4023DBB2860064DA0A /* GameScore.swift in Sources */,
 				8761730F23CBFF47007AB119 /* InitView.swift in Sources */,
 				87D60F3123D7C30F0064DA0A /* ContentTypes.swift in Sources */,
 				87D60F0D23D130630064DA0A /* RecordView.swift in Sources */,
+				87D60F4223DBB42F0064DA0A /* NewGameController.swift in Sources */,
 				87D60F2523D7AF760064DA0A /* CalendarWeekView.swift in Sources */,
 				87D60F2B23D7BB5F0064DA0A /* CalendarController.swift in Sources */,
 				87D60F1723D51CD30064DA0A /* MenuPreview.swift in Sources */,

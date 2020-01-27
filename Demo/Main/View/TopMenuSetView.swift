@@ -10,7 +10,7 @@ import UIKit
 
 protocol TopMenuSetViewDelegate {
     func openProfile()
-    func openNewGame()
+    func openEditNewGame(date: CalendarData?)
     func openCalendar()
     func openCamera()
 }
@@ -63,13 +63,13 @@ class TopMenuSetView: UIView {
     } ()
     
     @objc func profilePrevBtnHandler(sender: Any) {
-        print("newGamePrev Clicked")
+        print("profilePrev Clicked")
         delegate!.openProfile()
     }
     
     @objc func newGamePrevBtnHandler(sender: Any) {
         print("newGamePrev Clicked")
-        delegate!.openNewGame()
+        delegate!.openEditNewGame(date: nil)
     }
     
     @objc func calendarPrevBtnHandler(sender: Any) {

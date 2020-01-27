@@ -9,15 +9,20 @@
 import UIKit
 
 class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPreviewDelegate {
-
+ 
     // add profile to initialize each controllers
     var menuSetController: MenuSetController?
     
     var userData: UserData = UserData(userID: "TEST", overall: nil, dataFiles: nil, joinedClub: nil)
     var userSetting = (0, 0 , IntervalFormat.year)
     
+    var selectedDate: CalendarData = CalendarData()
+    
     func loadUserInfo() {
-        
+        selectedDate.year = Calendar.current.component(.year, from: Date())
+        selectedDate.month = Calendar.current.component(.month, from: Date())
+        selectedDate.day = Calendar.current.component(.day, from: Date())
+        selectedDate.weekday = WeekDay(rawValue: Calendar.current.component(.weekday, from: Date()))
     }
     
     func saveUserInfo() {
@@ -30,6 +35,7 @@ class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPre
 
     override func loadView() {
         view = MainView()
+        loadUserInfo()
     }
     
     override func viewDidLoad() {
@@ -65,7 +71,6 @@ class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPre
     
     // top Menu delegate functions
     func openMenu() {
-        
     }
     
     func getUserID() -> String {
@@ -74,6 +79,18 @@ class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPre
     
     func getUserOverall() -> ScoreFormat? {
         return userData.overall
+    }
+    
+    func getCurrentDate() -> CalendarData {
+        return selectedDate
+    }
+    
+    func getUserScore(date: CalendarData, interval: IntervalFormat?) -> ScoreFormat {
+        return ScoreFormat(high: 0, low: 0, avg: 0)
+    }
+    
+    func getUserDetailScores() -> [GameScore] {
+        return []
     }
 }
 
