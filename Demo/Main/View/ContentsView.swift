@@ -29,8 +29,8 @@ class ContentsView: UIView {
         switch selectedType {
         case .profile:
             curView = ProfileView()
-        case .newGame:
-            curView = NewGameView()
+        case .scorelist:
+            curView = ScoreListView()
         case .calendar:
             curView = CalendarView()
         case .record:
@@ -41,6 +41,8 @@ class ContentsView: UIView {
             curView = AnalysisView()
         case .setting:
             curView = SettingView()
+        case .newGame:
+            curView = NewGameView()
         default:
             curView = UIView()
         }

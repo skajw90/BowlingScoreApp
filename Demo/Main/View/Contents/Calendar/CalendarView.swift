@@ -16,7 +16,7 @@ protocol CalendarViewDelegate {
 protocol CalendarViewDataSource {
     func getCalendar() -> [Int]
     func getCurrentDate() -> CalendarData
-    func getMonthlyData() -> ScoreFormat
+    func getAverages(interval: IntervalFormat) -> ScoreFormat
     func getSelectedCell() -> Int?
 }
 
@@ -47,6 +47,7 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
         let view = CalendarBottomView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.dataSource = self
+        view.isCalendar = true
         addSubview(view)
         return view
     } ()
@@ -58,7 +59,7 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
     func updateAll() {
         calendarContentsView.calendarGridView.updateCells(map: dataSource!.getCalendar())
         calendarTopView.updateDateLabel()
-        calendarBottomView.setMonthlyScore()
+        calendarBottomView.setAverages()
     }
     
     override func layoutSubviews() {
@@ -85,9 +86,8 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
         delegate!.setCalendar(index: index)
     }
     
-    func getMonthlyData() -> ScoreFormat {
-        
-        return dataSource!.getMonthlyData()
+    func getAverages(interval: IntervalFormat) -> ScoreFormat {
+        return dataSource!.getAverages(interval: interval)
     }
     
     func getSelectedCell() -> Int? {

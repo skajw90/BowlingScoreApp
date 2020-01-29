@@ -9,7 +9,6 @@
 import UIKit
 
 class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPreviewDelegate {
- 
     // add profile to initialize each controllers
     var menuSetController: MenuSetController?
     
@@ -86,7 +85,7 @@ class MainViewController: UIViewController, MenuSetControllerDataSource, MenuPre
     }
     
     func getUserScore(date: CalendarData, interval: IntervalFormat?) -> ScoreFormat {
-        return ScoreFormat(high: 0, low: 0, avg: 0)
+        return ScoreFormat(high: nil, low: nil, avg: nil)
     }
     
     func getUserDetailScores() -> [GameScore] {

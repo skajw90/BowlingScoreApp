@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		874D68D123E10BEF00DEED07 /* ScoreInputPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874D68D023E10BEF00DEED07 /* ScoreInputPadView.swift */; };
+		874D68D323E10C2A00DEED07 /* ScoreInputPinsetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874D68D223E10C2A00DEED07 /* ScoreInputPinsetView.swift */; };
 		876172FB23CBFE61007AB119 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876172FA23CBFE61007AB119 /* AppDelegate.swift */; };
 		876172FD23CBFE61007AB119 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876172FC23CBFE61007AB119 /* SceneDelegate.swift */; };
 		876172FF23CBFE61007AB119 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876172FE23CBFE61007AB119 /* ViewController.swift */; };
@@ -32,7 +34,7 @@
 		87D60F0F23D1306C0064DA0A /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F0E23D1306C0064DA0A /* GraphView.swift */; };
 		87D60F1123D130840064DA0A /* AnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1023D130840064DA0A /* AnalysisView.swift */; };
 		87D60F1323D1308D0064DA0A /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1223D1308D0064DA0A /* SettingView.swift */; };
-		87D60F1523D130F80064DA0A /* NewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1423D130F80064DA0A /* NewGameView.swift */; };
+		87D60F1523D130F80064DA0A /* ScoreListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1423D130F80064DA0A /* ScoreListView.swift */; };
 		87D60F1723D51CD30064DA0A /* MenuPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1623D51CD30064DA0A /* MenuPreview.swift */; };
 		87D60F1923D7ABA90064DA0A /* CalendarTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1823D7ABA90064DA0A /* CalendarTopView.swift */; };
 		87D60F1F23D7AC760064DA0A /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F1E23D7AC760064DA0A /* CalendarGridView.swift */; };
@@ -50,10 +52,15 @@
 		87D60F3B23DAA24A0064DA0A /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3A23DAA24A0064DA0A /* ProfileController.swift */; };
 		87D60F3D23DAA7B30064DA0A /* ProfileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3C23DAA7B30064DA0A /* ProfileInfo.swift */; };
 		87D60F4023DBB2860064DA0A /* GameScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F3F23DBB2860064DA0A /* GameScore.swift */; };
-		87D60F4223DBB42F0064DA0A /* NewGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F4123DBB42F0064DA0A /* NewGameController.swift */; };
+		87D60F4223DBB42F0064DA0A /* ScoreListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F4123DBB42F0064DA0A /* ScoreListController.swift */; };
+		87D60F4623DFAE0A0064DA0A /* ScoreFrameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F4523DFAE0A0064DA0A /* ScoreFrameView.swift */; };
+		87D60F4823DFCB920064DA0A /* NewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F4723DFCB920064DA0A /* NewGameView.swift */; };
+		87D60F4A23DFDA150064DA0A /* NewGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D60F4923DFDA150064DA0A /* NewGameController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		874D68D023E10BEF00DEED07 /* ScoreInputPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreInputPadView.swift; sourceTree = "<group>"; };
+		874D68D223E10C2A00DEED07 /* ScoreInputPinsetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreInputPinsetView.swift; sourceTree = "<group>"; };
 		876172F723CBFE61007AB119 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		876172FA23CBFE61007AB119 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		876172FC23CBFE61007AB119 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -81,7 +88,7 @@
 		87D60F0E23D1306C0064DA0A /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		87D60F1023D130840064DA0A /* AnalysisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisView.swift; sourceTree = "<group>"; };
 		87D60F1223D1308D0064DA0A /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
-		87D60F1423D130F80064DA0A /* NewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameView.swift; sourceTree = "<group>"; };
+		87D60F1423D130F80064DA0A /* ScoreListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreListView.swift; sourceTree = "<group>"; };
 		87D60F1623D51CD30064DA0A /* MenuPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPreview.swift; sourceTree = "<group>"; };
 		87D60F1823D7ABA90064DA0A /* CalendarTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTopView.swift; sourceTree = "<group>"; };
 		87D60F1E23D7AC760064DA0A /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
@@ -99,7 +106,10 @@
 		87D60F3A23DAA24A0064DA0A /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		87D60F3C23DAA7B30064DA0A /* ProfileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfo.swift; sourceTree = "<group>"; };
 		87D60F3F23DBB2860064DA0A /* GameScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScore.swift; sourceTree = "<group>"; };
-		87D60F4123DBB42F0064DA0A /* NewGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameController.swift; sourceTree = "<group>"; };
+		87D60F4123DBB42F0064DA0A /* ScoreListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreListController.swift; sourceTree = "<group>"; };
+		87D60F4523DFAE0A0064DA0A /* ScoreFrameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreFrameView.swift; sourceTree = "<group>"; };
+		87D60F4723DFCB920064DA0A /* NewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameView.swift; sourceTree = "<group>"; };
+		87D60F4923DFDA150064DA0A /* NewGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +123,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		874D68CF23E0FC7700DEED07 /* Score */ = {
+			isa = PBXGroup;
+			children = (
+				87D60F1423D130F80064DA0A /* ScoreListView.swift */,
+				87D60F4523DFAE0A0064DA0A /* ScoreFrameView.swift */,
+				874D68D023E10BEF00DEED07 /* ScoreInputPadView.swift */,
+				874D68D223E10C2A00DEED07 /* ScoreInputPinsetView.swift */,
+			);
+			path = Score;
+			sourceTree = "<group>";
+		};
 		876172EE23CBFE61007AB119 = {
 			isa = PBXGroup;
 			children = (
@@ -228,7 +249,8 @@
 				87D60F2C23D7C00D0064DA0A /* MenuSetController.swift */,
 				87D60F2A23D7BB5F0064DA0A /* CalendarController.swift */,
 				87D60F3A23DAA24A0064DA0A /* ProfileController.swift */,
-				87D60F4123DBB42F0064DA0A /* NewGameController.swift */,
+				87D60F4123DBB42F0064DA0A /* ScoreListController.swift */,
+				87D60F4923DFDA150064DA0A /* NewGameController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -262,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				87D60F3E23DBAF9D0064DA0A /* NewGame */,
+				874D68CF23E0FC7700DEED07 /* Score */,
 				87D60F1B23D7ABF70064DA0A /* Profile */,
 				87D60F1A23D7ABB20064DA0A /* Calendar */,
 				87D60F1D23D7AC2C0064DA0A /* Record */,
@@ -280,7 +303,7 @@
 		87D60F3E23DBAF9D0064DA0A /* NewGame */ = {
 			isa = PBXGroup;
 			children = (
-				87D60F1423D130F80064DA0A /* NewGameView.swift */,
+				87D60F4723DFCB920064DA0A /* NewGameView.swift */,
 			);
 			path = NewGame;
 			sourceTree = "<group>";
@@ -369,18 +392,23 @@
 				87D60F2723D7B1060064DA0A /* CalendarData.swift in Sources */,
 				87D60F0923D11EB90064DA0A /* ContentsView.swift in Sources */,
 				87D60F0323CE81C10064DA0A /* BottomMenuSetView.swift in Sources */,
-				87D60F1523D130F80064DA0A /* NewGameView.swift in Sources */,
+				87D60F1523D130F80064DA0A /* ScoreListView.swift in Sources */,
 				8761731923CBFFBB007AB119 /* LogoView.swift in Sources */,
+				87D60F4823DFCB920064DA0A /* NewGameView.swift in Sources */,
 				87D60F1F23D7AC760064DA0A /* CalendarGridView.swift in Sources */,
 				87D60F4023DBB2860064DA0A /* GameScore.swift in Sources */,
 				8761730F23CBFF47007AB119 /* InitView.swift in Sources */,
+				874D68D323E10C2A00DEED07 /* ScoreInputPinsetView.swift in Sources */,
 				87D60F3123D7C30F0064DA0A /* ContentTypes.swift in Sources */,
 				87D60F0D23D130630064DA0A /* RecordView.swift in Sources */,
-				87D60F4223DBB42F0064DA0A /* NewGameController.swift in Sources */,
+				87D60F4223DBB42F0064DA0A /* ScoreListController.swift in Sources */,
+				87D60F4A23DFDA150064DA0A /* NewGameController.swift in Sources */,
 				87D60F2523D7AF760064DA0A /* CalendarWeekView.swift in Sources */,
 				87D60F2B23D7BB5F0064DA0A /* CalendarController.swift in Sources */,
 				87D60F1723D51CD30064DA0A /* MenuPreview.swift in Sources */,
+				874D68D123E10BEF00DEED07 /* ScoreInputPadView.swift in Sources */,
 				8761731B23CBFFCD007AB119 /* MainView.swift in Sources */,
+				87D60F4623DFAE0A0064DA0A /* ScoreFrameView.swift in Sources */,
 				87D60F0123CE81690064DA0A /* ProfileView.swift in Sources */,
 				87D60F3923DA99FF0064DA0A /* IntervalFormat.swift in Sources */,
 				8761731323CBFF81007AB119 /* LoginBtnView.swift in Sources */,

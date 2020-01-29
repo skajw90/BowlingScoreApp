@@ -19,7 +19,7 @@ class CalendarWeekView: UIView {
             let label = UILabel()
             label.textAlignment = .center
             label.adjustsFontForContentSizeCategory = true
-            label.text = "\(WeekDay(rawValue: i)!)"
+            label.text = "\(WeekDay(rawValue: i + 1)!)"
             if i == 0 { label.textColor = .red }
             else if i == 6 { label.textColor = .blue }
             else { label.textColor = .black }

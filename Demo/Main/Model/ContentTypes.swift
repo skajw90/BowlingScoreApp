@@ -8,6 +8,7 @@
 
 enum ContentsType {
     case profile
+    case scorelist
     case newGame
     case camera
     case calendar

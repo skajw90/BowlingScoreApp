@@ -9,11 +9,12 @@
 import UIKit
 
 protocol CalendarBottomViewDataSource {
-    func getMonthlyData() -> ScoreFormat
+    func getAverages(interval: IntervalFormat) -> ScoreFormat
 }
 
 class CalendarBottomView: UIView {
     var dataSource: CalendarBottomViewDataSource?
+    var isCalendar: Bool = false
     
     lazy var monthlyDataLabel: UILabel = {
         let label = UILabel()
@@ -63,7 +64,7 @@ class CalendarBottomView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        setMonthlyScore()
+        setAverages()
     }
     
     override func layoutSubviews() {
@@ -77,9 +78,18 @@ class CalendarBottomView: UIView {
         (averageLabel.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)
     }
     
-    func setMonthlyScore() {
-        let score = dataSource!.getMonthlyData()
-        if let high = score.high, let low = score.low, let avg = score.avg {
+    func setAverages() {
+        var score: ScoreFormat?
+        if isCalendar {
+            score = dataSource!.getAverages(interval: .month)
+            monthlyDataLabel.text = "Monthly\nData"
+        }
+        else {
+            score = dataSource!.getAverages(interval: .day)
+            monthlyDataLabel.text = "Daily\nData"
+        }
+
+        if let high = score!.high, let low = score!.low, let avg = score!.avg {
             noDataLabel.removeFromSuperview()
             highLowLabel.text = "H/G: \(high)\nL/G: \(low)"
             averageLabel.text = "AVG: \(avg)"

@@ -14,11 +14,10 @@ protocol CalendarControllerDelegate {
 
 protocol CalendarControllerDataSource {
     func getCurrentDate() -> CalendarData
-    func getUserData(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
+    func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
 }
 
 class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
-   
     var dataSource: CalendarControllerDataSource?
     var delegate: CalendarControllerDelegate?
     var calendarView: CalendarView?
@@ -129,8 +128,8 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         return currentDate
     }
     
-    func getMonthlyData() -> ScoreFormat {
-        return dataSource!.getUserData(date: dataSource!.getCurrentDate(), interval: .month)
+    func getAverages(interval: IntervalFormat) -> ScoreFormat {
+        dataSource!.getAverages(date: dataSource!.getCurrentDate(), interval: interval)
     }
     
     func getSelectedCell() -> Int? {
@@ -142,7 +141,7 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         if pos < 7 && curCalendarMap[pos] > 20 {
             monthAndYear = getMonthAndYear(index: -1)
         }
-        else if pos > 35 && curCalendarMap[pos] < 10 {
+        else if pos > 30 && curCalendarMap[pos] < 10 {
             monthAndYear = getMonthAndYear(index: 1)
         }
         

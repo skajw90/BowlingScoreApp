@@ -47,9 +47,9 @@ class ProfileInfoView: UIView {
         profileInfo.nameLabel.text = "\(dataSource!.getProfileInfo().0)"
         profileInfo.nameLabel.textColor = .black
         if let score = dataSource!.getProfileInfo().1 {
-            profileInfo.highScoreLabel.text = "HIGH: \(score.high)"
-            profileInfo.lowScorelabel.text = "LOW: \(score.low)"
-            profileInfo.averageLabel.text = "AVG: \(score.avg)"
+            profileInfo.highScoreLabel.text = "HIGH: \(score.high!)"
+            profileInfo.lowScorelabel.text = "LOW: \(score.low!)"
+            profileInfo.averageLabel.text = "AVG: \(score.avg!)"
         }
         else {
             profileInfo.highScoreLabel.text = "HIGH: ---"

@@ -7,6 +7,6 @@
 //
 
 enum WeekDay: Int {
-    case Sun = 0, Mon, Tue, Wed, Thu, Fri, Sat
+    case Sun = 1, Mon, Tue, Wed, Thu, Fri, Sat
 }
 

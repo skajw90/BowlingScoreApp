@@ -16,7 +16,7 @@ protocol MenuSetControllerDataSource {
     func getUserDetailScores() -> [GameScore]
 }
 
-class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, CalendarControllerDataSource, CalendarControllerDelegate, NewGameControllerDataSource {
+class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, CalendarControllerDataSource, CalendarControllerDelegate, ScoreListControllerDataSource, ScoreListControllerDelegate {
     var dataSource: MenuSetControllerDataSource?
     var mainView: MainView
     var selectedContents: ContentsType?
@@ -37,8 +37,8 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         let controller = ProfileController(view: mainView.contentsView.curView as! ProfileView, name: dataSource!.getUserID(), overall: dataSource!.getUserOverall())
     }
     
-    func openEditNewGame(date: CalendarData?) {
-        if selectedContents == .newGame {
+    func openScoreListView(date: CalendarData?) {
+        if selectedContents == .scorelist {
             return
         }
         var openDate = getCurrentDate()
@@ -46,10 +46,11 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
             openDate = date
         }
         print("action open new game")
-        selectedContents = .newGame
+        selectedContents = .scorelist
         mainView.contentsView.switchViews(selectedType: selectedContents!)
-        let controller = NewGameController(view: mainView.contentsView.curView as! NewGameView, date: openDate)
+        let controller = ScoreListController(view: mainView.contentsView.curView as! ScoreListView, date: openDate)
         controller.dataSource = self
+        controller.delegate = self
         
     }
     
@@ -124,7 +125,7 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         return dataSource!.getUserScore(date: date, interval: nil)
     }
     
-    func getUserData(date: CalendarData, interval: IntervalFormat) -> ScoreFormat {
+    func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreFormat {
         return dataSource!.getUserScore(date: date, interval: interval)
     }
     
@@ -137,6 +138,25 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
     }
     
     func openEditGame(date: CalendarData) {
-        openEditNewGame(date: date)
+        openScoreListView(date: date)
+    }
+    
+    func getNumOfData(date: CalendarData) -> Int {
+        return 1
+    }
+    
+    func openNewGame(date: CalendarData) {
+        if selectedContents == .newGame {
+            return
+        }
+        selectedContents = .newGame
+        mainView.contentsView.switchViews(selectedType: .newGame)
+        // add controller
+        let controller = NewGameController(view: mainView.contentsView.curView as! NewGameView, date: date)
+        
+    }
+    
+    func openEditGame() {
+        
     }
 }
