@@ -13,6 +13,7 @@ class CalendarCell: UIView {
     var y: Int = 0
     var isMainDaysInMonth = false
     var isToday = false
+    var hasContent = false
     
     lazy var dateLabel: UILabel = {
         let label = UILabel()
@@ -46,6 +47,16 @@ class CalendarCell: UIView {
         }
         else if let circle = circle {
             circle.removeFromSuperview()
+        }
+        
+        if hasContent {
+            dailyAverage.text = "*"
+            dailyAverage.textColor = .red
+            addSubview(dailyAverage)
+        }
+        else {
+            dailyAverage.text = ""
+            dailyAverage.removeFromSuperview()
         }
     }
     

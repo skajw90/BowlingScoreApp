@@ -18,6 +18,7 @@ protocol CalendarViewDataSource {
     func getCurrentDate() -> CalendarData
     func getAverages(interval: IntervalFormat) -> ScoreFormat
     func getSelectedCell() -> Int?
+    func hasContent(index: Int) -> Bool
 }
 
 class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsViewDelegate, CalendarTopViewDelegate, CalendarTopViewDataSoucre, CalendarBottomViewDataSource {
@@ -92,6 +93,10 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
     
     func getSelectedCell() -> Int? {
         return dataSource!.getSelectedCell()
+    }
+    
+    func hasContent(index: Int) -> Bool {
+        dataSource!.hasContent(index: index)
     }
     
     func changeCalendar(isPrev: Bool) {

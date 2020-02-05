@@ -16,6 +16,7 @@ protocol CalendarContentsViewDelegate {
 protocol CalendarContentsViewDataSource {
     func getSelectedCell() -> Int?
     func getCalendarData() -> [Int]
+    func hasContent(index: Int) -> Bool
 }
 
 class CalendarContentsView: UIView, CalendarGridViewDataSource, CalendarGridViewDelegate {
@@ -65,5 +66,9 @@ class CalendarContentsView: UIView, CalendarGridViewDataSource, CalendarGridView
     
     func openEditGames(pos: Int) {
         delegate!.openEditGame(pos: pos)
+    }
+    
+    func hasContent(index: Int) -> Bool {
+        return dataSource!.hasContent(index: index)
     }
 }

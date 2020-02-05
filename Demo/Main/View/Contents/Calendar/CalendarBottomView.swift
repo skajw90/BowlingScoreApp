@@ -78,6 +78,10 @@ class CalendarBottomView: UIView {
         (averageLabel.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)
     }
     
+    func updateDateLabel() {
+        setAverages()
+    }
+    
     func setAverages() {
         var score: ScoreFormat?
         if isCalendar {

@@ -10,12 +10,13 @@ import UIKit
 
 protocol ScoreListControllerDelegate {
     func openNewGame(date: CalendarData)
+    func setCurrentDate(date: CalendarData)
     func openEditGame()
 }
 
 protocol ScoreListControllerDataSource {
     func getCurrentDate() -> CalendarData
-    func getUserDetailScores() -> [GameScore]
+    func getUserDetailScores(index: Int) -> GameScore
     func getNumOfData(date: CalendarData) -> Int
     func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
 }
@@ -37,8 +38,8 @@ class ScoreListController: ScoreListViewDataSource, ScoreListViewDelegate {
         return currentDate
     }
     
-    func getScores() -> [GameScore] {
-        return dataSource!.getUserDetailScores()
+    func getScores(tag: Int) -> GameScore {
+        return dataSource!.getUserDetailScores(index: tag)
     }
     
     func setCalendar(index: Int) {
@@ -67,6 +68,7 @@ class ScoreListController: ScoreListViewDataSource, ScoreListViewDelegate {
         else {
             currentDate.day! += index
         }
+        delegate!.setCurrentDate(date: currentDate)
         scoreListView!.updateAll()
     }
     

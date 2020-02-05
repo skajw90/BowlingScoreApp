@@ -8,14 +8,18 @@
 
 import UIKit
 
+protocol ScoreFrameViewDelegate {
+    func enableSaveScore(isEnable: Bool)
+}
+
 protocol ScoreFrameViewDataSource {
-    func getSelectedFrame() -> Int
+    func getSelectedFrame() -> (frame: Int, turn: Int)
+    func getScores(tag: Int) -> GameScore
 }
 
 class ScoreFrameView: UIView {
     var dataSource: ScoreFrameViewDataSource?
-    var isPreView: Bool = false
-    var turn: Int = 0
+    var delegate: ScoreFrameViewDelegate?
     var frameViews: [FrameView] = []
     
     override init(frame: CGRect) {
@@ -38,16 +42,52 @@ class ScoreFrameView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        
+        let scores = dataSource!.getScores(tag: tag)
         for i in 0 ..< 10 {
-            if !isPreView {
-                // set highlight for current frame
-                if i == dataSource!.getSelectedFrame() {
-                    frameViews[i].scoreInputView.highlightBorder(turn: turn)
+            if let out = scores.getOutput(index: i).score {
+                frameViews[i].scoreOutputLabel.text = "\(out)"
+            }
+        }
+        
+        for j in 0 ..< 21 {
+            if j == 0 && scores.getInput(index: j) == nil {
+                frameViews[j].scoreInputView.firstScore.backgroundColor = .yellow
+            }
+            var result = ""
+            if let score = scores.getInput(index: j) {
+                result = "\(score)"
+                if score == 0 { result = "-" }
+                if score == 10 { result = "F" }
+                if j == 20 {
+                    if score == 11 {
+                        if scores.getInput(index: j - 1) != 11 { result = "/" }
+                        else { result = "X" }
+                    }
+                }
+                else {
+                    if j % 2 == 0 {
+                        if score == 11 { result = "X" }
+                    }
+                    else {
+                        if score == 11 {
+                            if j == 19 && scores.getInput(index: j - 1) == 11 { result = "X"}
+                            else { result = "/" }
+                        }
+                    }
                 }
             }
+            if j == 20 {
+                frameViews[9].scoreInputView.thirdScore.text = result
+            }
+            else if j % 2 == 0 {
+                frameViews[j / 2].scoreInputView.firstScore.text = result
+            }
             else {
-                // get all score data
+                frameViews[j / 2].scoreInputView.secondScore.text = result
+            }
+            
+            if let delegate = delegate, frameViews[9].scoreOutputLabel.text != nil {
+                delegate.enableSaveScore(isEnable: true)
             }
         }
     }
@@ -56,8 +96,17 @@ class ScoreFrameView: UIView {
         super.layoutSubviews()
         var rect = bounds
         for i in 0 ..< 10 {
-            (frameViews[i].frame, rect) = rect.divided(atDistance: frame.maxX / 10, from: .minXEdge)
+            if i != 9 {
+                (frameViews[i].frame, rect) = rect.divided(atDistance: 2 * frame.maxX / 21, from: .minXEdge)
+            }
+            else {
+                (frameViews[i].frame, rect) = rect.divided(atDistance: 3 * frame.maxX / 21, from: .minXEdge)
+            }
         }
+    }
+    
+    func update() {
+        setNeedsDisplay()
     }
 }
 
@@ -85,6 +134,7 @@ class FrameView: UIView {
         label.textAlignment = .center
         label.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         label.layer.borderWidth = 1
+        label.textColor = .black
         addSubview(label)
         return label
     } ()
@@ -147,16 +197,24 @@ class ScoreInputView: UIView {
         }
     }
     
-    func highlightBorder(turn: Int) {
+    func highlightBorder(turn: Int, on: Bool) {
+        var highlightView = UIView()
         switch turn {
         case 0:
-            firstScore.backgroundColor = .yellow
+            highlightView = firstScore
         case 1:
-            secondScore.backgroundColor = .yellow
+            highlightView = secondScore
         case 2:
-            thirdScore.backgroundColor = .yellow
+            highlightView = thirdScore
         default:
             return
         }
+        if on {
+            highlightView.backgroundColor = .yellow
+        }
+        else {
+            highlightView.backgroundColor = .clear
+        }
+        setNeedsDisplay()
     }
 }

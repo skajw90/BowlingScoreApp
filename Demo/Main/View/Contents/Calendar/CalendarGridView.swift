@@ -16,6 +16,7 @@ protocol CalendarGridViewDelegate {
 protocol CalendarGridViewDataSource {
     func getSelectedCell() -> Int?
     func getCalendarData() -> [Int]
+    func hasContent(index: Int) -> Bool
 }
 
 class CalendarGridView: UIView {
@@ -83,8 +84,18 @@ class CalendarGridView: UIView {
                 else if isMain && map[7 * y + x] == 1 {
                     isMain = false
                 }
-            
                 cell.isMainDaysInMonth = isMain
+                if isMain {
+                    if dataSource!.hasContent(index: map[7 * y + x]) {
+                        cell.hasContent = true
+                    }
+                    else {
+                        cell.hasContent = false
+                    }
+                }
+                else {
+                    cell.hasContent = false
+                }
                 cell.update(date: map[7 * y + x], avg: nil)
                 cells.append(cell)
                 addSubview(cells[7 * y + x])

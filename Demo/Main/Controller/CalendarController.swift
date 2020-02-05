@@ -10,11 +10,13 @@ import UIKit
 
 protocol CalendarControllerDelegate {
     func openEditGame(date: CalendarData)
+    func setMonthlyScores(date: CalendarData)
 }
 
 protocol CalendarControllerDataSource {
     func getCurrentDate() -> CalendarData
     func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
+    func hasContentsInMonth(date: CalendarData) -> [Bool]
 }
 
 class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
@@ -29,8 +31,8 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         currentDate = CalendarData()
     }
     
-    init(view: CalendarView, date: CalendarData) {
-        currentDate = date
+    init(view: CalendarView) {
+        currentDate = CalendarData(year: Calendar.current.component(.year, from: Date()), month: Calendar.current.component(.month, from: Date()), day: Calendar.current.component(.day, from: Date()))
         setDaysList(year: currentDate.year!, month: currentDate.month!, day: currentDate.day!)
         
         view.delegate = self
@@ -82,8 +84,10 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
                 monthCount = 1
             }
             if let day = day {
-                if monthCount == day && !isPrevMonth {
-                    todayCell = i
+                if year == Calendar.current.component(.year, from: Date()) && month == Calendar.current.component(.month, from: Date()) && day == Calendar.current.component(.day, from: Date()) {
+                    if monthCount == day && !isPrevMonth && i < firstDayPos + numOfDays  {
+                        todayCell = i
+                    }
                 }
             }
             else {
@@ -92,6 +96,7 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
     
             curCalendarMap.append(monthCount)
             monthCount += 1
+            
         }
     }
     
@@ -103,6 +108,7 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
             day = Calendar.current.component(.day, from: Date())
         }
         setDaysList(year: currentDate.year!, month: currentDate.month!, day: day)
+        delegate!.setMonthlyScores(date: currentDate)
         calendarView!.updateAll()
     }
     
@@ -132,6 +138,10 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         dataSource!.getAverages(date: dataSource!.getCurrentDate(), interval: interval)
     }
     
+    func hasContent(index: Int) -> Bool {
+        return dataSource!.hasContentsInMonth(date: currentDate)[index]
+    }
+    
     func getSelectedCell() -> Int? {
         return todayCell
     }
@@ -146,7 +156,6 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         }
         
         let selectedDate = CalendarData(year: monthAndYear.1, month: monthAndYear.0, day: curCalendarMap[pos], weekday: WeekDay(rawValue: getWeekDay(year: monthAndYear.1, month: monthAndYear.0, day: curCalendarMap[pos])))
-        
         delegate!.openEditGame(date: selectedDate)
     }
 }

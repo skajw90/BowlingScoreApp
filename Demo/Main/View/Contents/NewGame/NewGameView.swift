@@ -13,13 +13,24 @@ enum InputMode {
     case pin
 }
 
-protocol NewGameViewDataSource {
-    func getSelectedFrame() -> Int
-    func getDate() -> CalendarData
+protocol NewGameViewDelegate {
+    func setSelectedFrame(index: Int)
+    func setScore(score: Int)
+    func saveScore()
 }
 
-class NewGameView: UIView, ScoreFrameViewDataSource {
+protocol NewGameViewDataSource {
+    func getSelectedFrame() -> (frame: Int, turn: Int)
+    func getDate() -> CalendarData
+    func getNextAvailable(index: Int) -> Bool
+    func getScores() -> GameScore
+    func getAvailableScores() -> [Bool]
+}
+
+class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource, ScoreInputPadViewDelegate, ScoreFrameViewDelegate {
+    
     var dataSource: NewGameViewDataSource?
+    var delegate: NewGameViewDelegate?
     var inputMode: InputMode = .pad
     
     lazy var dateLabel: UILabel = {
@@ -31,9 +42,24 @@ class NewGameView: UIView, ScoreFrameViewDataSource {
         return label
     } ()
     
+    lazy var saveButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Save", for: .normal)
+        button.isEnabled = false
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.red.cgColor
+        button.addTarget(self, action: #selector(saveButtonHanlder), for: UIControl.Event.touchDown)
+        addSubview(button)
+        return button
+       } ()
+    
     lazy var scoreFrameView: ScoreFrameView = {
         let view = ScoreFrameView()
         view.dataSource = self
+        view.delegate = self
+        view.tag = 0
         addSubview(view)
         return view
     } ()
@@ -50,6 +76,8 @@ class NewGameView: UIView, ScoreFrameViewDataSource {
     
     lazy var scoreInputPadView: ScoreInputPadView = {
         let view = ScoreInputPadView()
+        view.dataSource = self
+        view.delegate = self
         view.backgroundColor = .yellow
         return view
     } ()
@@ -68,11 +96,13 @@ class NewGameView: UIView, ScoreFrameViewDataSource {
     override func layoutSubviews() {
         super.layoutSubviews()
         changeInputMethodButton.removeFromSuperview()
-        var rect = bounds
-        
-        (dateLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 12, from: .minYEdge)
-        
+        var rect = CGRect(x: bounds.maxX / 32, y: 0, width: 15 * frame.maxX / 16, height: bounds.maxY)
+        var labelRect: CGRect
+        (labelRect, rect) = rect.divided(atDistance: frame.maxY / 12, from: .minYEdge)
+        (dateLabel.frame, labelRect) = labelRect.divided(atDistance: 2 * frame.maxX / 3, from: .minXEdge)
+        (saveButton.frame, labelRect) = labelRect.divided(atDistance: 1 * frame.maxX / 3, from: .minXEdge)
         (scoreFrameView.frame, rect) = rect.divided(atDistance: frame.maxY / 6, from: .minYEdge)
+        rect = CGRect(x: 0, y: rect.minY, width: frame.maxX, height: rect.maxY)
         if inputMode == .pad {
             scoreInputPinsetView.removeFromSuperview()
             (scoreInputPadView.frame, rect) = rect.divided(atDistance: 5 * frame.maxY / 6 - frame.maxY / 12, from: .minYEdge)
@@ -89,8 +119,28 @@ class NewGameView: UIView, ScoreFrameViewDataSource {
         addSubview(changeInputMethodButton)
     }
     
-    func getSelectedFrame() -> Int {
+    func getSelectedFrame() -> (frame: Int, turn: Int) {
         return dataSource!.getSelectedFrame()
+    }
+    
+    func getNextAvailable(index: Int) -> Bool {
+        return dataSource!.getNextAvailable(index: index)
+    }
+       
+    func setCurrentFrameNumber(index: Int) {
+        delegate!.setSelectedFrame(index: index)
+    }
+    
+    func setScore(score: Int) {
+        delegate!.setScore(score: score)
+    }
+    
+    func getScores(tag: Int) -> GameScore {
+        dataSource!.getScores()
+    }
+    
+    func enableSaveScore(isEnable: Bool) {
+        saveButton.isEnabled = isEnable
     }
     
     @objc func changeInputMethod(sender: Any) {
@@ -102,4 +152,27 @@ class NewGameView: UIView, ScoreFrameViewDataSource {
         }
         setNeedsLayout()
     }
+    
+    @objc func saveButtonHanlder(sender: Any) {
+        delegate!.saveScore()
+    }
+    
+    func getAvailableScores() -> [Bool] {
+        return dataSource!.getAvailableScores()
+    }
+}
+
+extension UIButton {
+    override open var isEnabled: Bool {
+               didSet {
+                   DispatchQueue.main.async {
+                       if self.isEnabled {
+                           self.alpha = 1.0
+                       }
+                       else {
+                           self.alpha = 0.7
+                       }
+                   }
+               }
+           }
 }

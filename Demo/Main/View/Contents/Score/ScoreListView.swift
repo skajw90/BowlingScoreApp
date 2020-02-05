@@ -16,12 +16,13 @@ protocol ScoreListViewDelegate {
 
 protocol ScoreListViewDataSource {
     func getCurrentDate() -> CalendarData
-    func getScores() -> [GameScore]
+    func getScores(tag: Int) -> GameScore
     func getAverages(interval: IntervalFormat) -> ScoreFormat
     func getNumOfData(date: CalendarData) -> Int
 }
 
-class ScoreListView: UIView, CalendarTopViewDelegate, CalendarTopViewDataSoucre, CalendarBottomViewDataSource {
+class ScoreListView: UIView, CalendarTopViewDelegate, CalendarTopViewDataSoucre, CalendarBottomViewDataSource, ScoreFrameViewDataSource {
+    
     var selectedHeaderNum = -1
     var delegate: ScoreListViewDelegate?
     var dataSource: ScoreListViewDataSource?
@@ -41,14 +42,6 @@ class ScoreListView: UIView, CalendarTopViewDelegate, CalendarTopViewDataSoucre,
         view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
         view.dataSource = self
-        addSubview(view)
-        return view
-    } ()
-    
-    
-    lazy var sampleColor: UIView = {
-        let view = UIView()
-        view.backgroundColor = .red
         addSubview(view)
         return view
     } ()
@@ -90,10 +83,20 @@ class ScoreListView: UIView, CalendarTopViewDelegate, CalendarTopViewDataSoucre,
     
     func updateAll() {
         calendarTopView.updateDateLabel()
+        calendarBottomView.updateDateLabel()
+        tableView.reloadData()
     }
     
     func getAverages(interval: IntervalFormat) -> ScoreFormat {
         return dataSource!.getAverages(interval: interval)
+    }
+    
+    func getSelectedFrame() -> (frame: Int, turn: Int) {
+        return (frame: 0, turn: 0)
+    }
+    
+    func getScores(tag: Int) -> GameScore {
+        return dataSource!.getScores(tag: tag)
     }
 }
 
@@ -133,7 +136,8 @@ extension ScoreListView: UITableViewDataSource {
         cell.addGestureRecognizer(cellTagGesture)
         if !cell.hasView {
             let view = ScoreFrameView(frame: CGRect(x: 1 * frame.maxX / 36, y: 1 * tableView.rowHeight / 36, width: 34 * frame.maxX / 36, height: 34 * tableView.rowHeight / 36))
-            view.isPreView = true
+            view.tag = indexPath.row
+            view.dataSource = self
             cell.addSubview(view)
         }
         return cell

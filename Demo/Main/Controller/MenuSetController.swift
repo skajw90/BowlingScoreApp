@@ -8,15 +8,25 @@
 
 import UIKit
 
+protocol MenuSetControllerDelegate {
+    func saveUserInfo(score: GameScore, date: CalendarData)
+    func setCurrentDate(date: CalendarData)
+    func loadUserScore(date: CalendarData)
+}
+
 protocol MenuSetControllerDataSource {
     func getUserID() -> String
     func getUserOverall() -> ScoreFormat?
     func getCurrentDate() -> CalendarData
-    func getUserScore(date: CalendarData, interval: IntervalFormat?) -> ScoreFormat
-    func getUserDetailScores() -> [GameScore]
+    func getUserScore(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
+    func getUserDetailScores(index: Int) -> GameScore
+    func getNumUserScoreData() -> Int
+    func hasContentsInMonth(date: CalendarData) -> [Bool]
 }
 
-class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, CalendarControllerDataSource, CalendarControllerDelegate, ScoreListControllerDataSource, ScoreListControllerDelegate {
+class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, CalendarControllerDataSource, CalendarControllerDelegate, ScoreListControllerDataSource, ScoreListControllerDelegate, NewGameControllerDelegate {
+    
+    var delegate: MenuSetControllerDelegate?
     var dataSource: MenuSetControllerDataSource?
     var mainView: MainView
     var selectedContents: ContentsType?
@@ -44,7 +54,17 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         var openDate = getCurrentDate()
         if let date = date {
             openDate = date
+            delegate!.setCurrentDate(date: date)
         }
+        else {
+            let year = Calendar.current.component(.year, from: Date())
+            let month = Calendar.current.component(.month, from: Date())
+            let day = Calendar.current.component(.day, from: Date())
+            let weekday = Calendar.current.component(.weekday, from: Date())
+            openDate = CalendarData(year: year, month: month, day: day, weekday: WeekDay(rawValue: weekday))
+            delegate!.setCurrentDate(date: openDate)
+        }
+        
         print("action open new game")
         selectedContents = .scorelist
         mainView.contentsView.switchViews(selectedType: selectedContents!)
@@ -58,10 +78,17 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         if selectedContents == .calendar {
             return
         }
+        let year = Calendar.current.component(.year, from: Date())
+        let month = Calendar.current.component(.month, from: Date())
+        let day = Calendar.current.component(.day, from: Date())
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        let openDate = CalendarData(year: year, month: month, day: day, weekday: WeekDay(rawValue: weekday))
+        delegate!.setCurrentDate(date: openDate)
+        delegate!.loadUserScore(date: openDate)
         print("action open calendar")
         selectedContents = .calendar
         mainView.contentsView.switchViews(selectedType: selectedContents!)
-        let controller = CalendarController(view: mainView.contentsView.curView as! CalendarView, date: getCurrentDate())
+        let controller = CalendarController(view: mainView.contentsView.curView as! CalendarView)
         controller.dataSource = self
         controller.delegate = self
     }
@@ -121,9 +148,9 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
     }
     
     // TODO: get user data
-    func getUserScore(date: CalendarData) -> ScoreFormat? {
-        return dataSource!.getUserScore(date: date, interval: nil)
-    }
+//    func getUserScore(date: CalendarData) -> ScoreFormat? {
+//        return dataSource!.getUserScore(date: date, interval: .day)
+//    }
     
     func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreFormat {
         return dataSource!.getUserScore(date: date, interval: interval)
@@ -133,8 +160,8 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         return dataSource!.getCurrentDate()
     }
     
-    func getUserDetailScores() -> [GameScore] {
-        return dataSource!.getUserDetailScores()
+    func getUserDetailScores(index: Int) -> GameScore {
+        return dataSource!.getUserDetailScores(index: index)
     }
     
     func openEditGame(date: CalendarData) {
@@ -142,18 +169,36 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
     }
     
     func getNumOfData(date: CalendarData) -> Int {
-        return 1
+        return dataSource!.getNumUserScoreData()
     }
+    
+    func saveScores(score: GameScore, date: CalendarData) {
+        delegate!.saveUserInfo(score: score, date: date)
+    }
+    
+    func setCurrentDate(date: CalendarData) {
+        delegate!.setCurrentDate(date: date)
+    }
+    
+    func hasContentsInMonth(date: CalendarData) -> [Bool] {
+        return dataSource!.hasContentsInMonth(date: date)
+    }
+    
+    func setMonthlyScores(date: CalendarData) {
+        delegate!.loadUserScore(date: date)
+    }
+    
     
     func openNewGame(date: CalendarData) {
         if selectedContents == .newGame {
             return
         }
+        delegate!.setCurrentDate(date: date)
         selectedContents = .newGame
         mainView.contentsView.switchViews(selectedType: .newGame)
         // add controller
         let controller = NewGameController(view: mainView.contentsView.curView as! NewGameView, date: date)
-        
+        controller.delegate = self
     }
     
     func openEditGame() {

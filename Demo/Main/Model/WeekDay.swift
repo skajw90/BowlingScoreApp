@@ -6,7 +6,7 @@
 //  Copyright © 2020 Jiwon Nam. All rights reserved.
 //
 
-enum WeekDay: Int {
+enum WeekDay: Int, Codable {
     case Sun = 1, Mon, Tue, Wed, Thu, Fri, Sat
 }
 
