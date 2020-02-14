@@ -13,16 +13,18 @@ protocol ProfileInfoViewDelegate {
 }
 
 protocol ProfileInfoViewDataSource {
-    func getProfileInfo() -> (String, ScoreFormat?)
+    func getProfileInfo() -> (String, ScoreOverallFormat?)
 }
 
-class ProfileInfoView: UIView {
+class ProfileInfoView: UIView, ProfileInfoDataSource {
     
     var delegate: ProfileInfoViewDelegate?
     var dataSource: ProfileInfoViewDataSource?
     
     lazy var profileInfo: ProfileInfo = {
         let view = ProfileInfo()
+        view.dataSource = self
+        view.record = false
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
         return view
@@ -38,28 +40,12 @@ class ProfileInfoView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        DispatchQueue.main.async {
-            self.update()
-        }
+//        DispatchQueue.main.async {
+//            //self.update()
+//        }
     }
     
-    func update() {
-        profileInfo.nameLabel.text = "\(dataSource!.getProfileInfo().0)"
-        profileInfo.nameLabel.textColor = .black
-        if let score = dataSource!.getProfileInfo().1 {
-            profileInfo.highScoreLabel.text = "HIGH: \(score.high!)"
-            profileInfo.lowScorelabel.text = "LOW: \(score.low!)"
-            profileInfo.averageLabel.text = "AVG: \(score.avg!)"
-        }
-        else {
-            profileInfo.highScoreLabel.text = "HIGH: ---"
-            profileInfo.lowScorelabel.text = "LOW: ---"
-            profileInfo.averageLabel.text = "AVG: ---"
-        }
-        profileInfo.nameLabel.setNeedsDisplay()
-    }
-    
-    func getProfileInfo() -> (String, ScoreFormat?) {
+    func getProfileInfo() -> (String, ScoreOverallFormat?) {
         return dataSource!.getProfileInfo()
     }
 }

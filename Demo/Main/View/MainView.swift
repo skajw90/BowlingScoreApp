@@ -9,6 +9,7 @@
 import UIKit
 
 class MainView: UIView {
+    // MARK: - UIView Properties
     lazy var menuPreview: MenuPreview = {
         let view = MenuPreview()
         view.backgroundColor = .blue

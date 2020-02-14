@@ -18,6 +18,7 @@ struct FrameScore: Codable {
     var score: Int?
     var bonusCount: Int
     var stat: ScoreStat?
+    var bonusStat: [ScoreStat]?
     var isSplit: Bool
     
     enum CodingKeys: String, CodingKey {
@@ -31,7 +32,7 @@ struct FrameScore: Codable {
 class GameScore: Codable {
     var input: [Int?]
     var output: [FrameScore]
-    var totalScore: Int
+    var finalScore: Int?
     
     enum Error: Swift.Error {
         case encoding
@@ -41,13 +42,11 @@ class GameScore: Codable {
     enum CodingKeys: String, CodingKey {
         case input = "input"
         case output = "output"
-        case totalScore = "totalScore"
     }
     
     init() {
         input = Array(repeating: nil, count: 21)
         output = Array(repeating: FrameScore(bonusCount: 0, isSplit: false), count: 10)
-        totalScore = 0
     }
     
     func getScoreValue(index: Int) -> Int? {
@@ -67,7 +66,7 @@ class GameScore: Codable {
                             if score == 10 {
                                 if output[8].bonusCount != 2 {
                                     output[8].bonusCount = 2
-                                    output[8].stat = .strike
+                                    output[i / 2].stat = .strike
                                 }
                                 else {
                                     if let first = getScoreValue(index: i + 2) {
@@ -137,8 +136,7 @@ class GameScore: Codable {
                 }
                 else {
                     if i == 18 && score == 10 {
-                        //output[9].bonusStat = []
-                        output[9].stat = .strike
+                        output[i / 2].stat = .strike
                     }
                     else if i == 19 && input[18] != 11 {
                         if score == 10 {
@@ -152,17 +150,31 @@ class GameScore: Codable {
                             return
                         }
                     }
-                    else if i == 20 && input[19] != 11 {
-                        score = 10 - input[19]!
+                    else if i == 19 && input[18] == 11 && score == 10 {
+                        output[9].bonusStat = []
+                        output[9].bonusStat!.append(.strike)
+                        
+                    }
+                    else if i == 20 && score == 10 {
+                        if output[9].stat != .strike {
+                            output[9].bonusStat = []
+                        }
+                        else if output[9].stat == .strike && input[19] != 10 {
+                            output[9].bonusStat = [.spare]
+                            score = 10 - input[19]!
+                        }
+                        else {
+                            output[9].bonusStat!.append(.strike)
+                        }
                     }
                 }
                 total += score
                 
-                if showOutput && i < 18 {
-                    output[i / 2].score = total
+                if showOutput && i < 18 { output[i / 2].score = total }
+                if i == 20 {
+                    output[9].score = total
+                    finalScore = total
                 }
-                if i == 20 { output[9].score = total }
-                
                 i += 1
                 showOutput = false
             }
@@ -172,6 +184,32 @@ class GameScore: Codable {
         }
     }
     
+    func getNumOfStat() -> (strike: Int, spare: Int, open: Int, count: Int) {
+        var openCount = 0
+        var spareCount = 0
+        var strikeCount = 0
+        var count = 0
+        
+        for i in 0 ..< output.count {
+            if output[i].stat == .spare {
+                spareCount += 1
+            }
+            else if output[i].stat == .open {
+                openCount += 1
+            }
+            else if output[i].stat == .strike {
+                strikeCount += 1
+            }
+            if i == 9, let bonusStat = output[9].bonusStat {
+                let num = bonusStat.count
+                strikeCount += num
+                count += num
+            }
+            count += 1
+        }
+        
+        return (strike: strikeCount, spare: spareCount, open: openCount, count: count)
+    }
     
     func setInput(index: Int, score: Int?) {
         input[index] = score

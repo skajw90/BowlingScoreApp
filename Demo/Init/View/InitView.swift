@@ -121,20 +121,20 @@ class InitView: UIView {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
+        for _ in touches {
             if isEditing {
                 endEditing(true)
                 isEditing = false
             }
-            createViewForTouch(touch: touch)
+            //createViewForTouch(touch: touch)
         }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            removeViewForTouch(touch: touch)
-        }
-    }
+//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        for touch in touches {
+//            //removeViewForTouch(touch: touch)
+//        }
+//    }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {

@@ -8,12 +8,7 @@
 
 import UIKit
 
-//protocol ContentsViewDataSource {
-//    func getContentsType() -> ContentsType
-//}
-
 class ContentsView: UIView {
-    //var dataSource: ContentsViewDataSource?
     var curType: ContentsType = .profile
     var curView: UIView = UIView()
 

@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
 
+    var nextView: Bool = true
+    
     var initView: InitView {
         return view as! InitView
     }
@@ -63,6 +65,15 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
         initView.delegate = self
         initView.idInputBar.delegate = self
         initView.passwordInputBar.delegate = self
+        
+        DispatchQueue.main.async {
+            print("auto login")
+            if self.nextView {
+                self.removeViews()
+                let controller = MainViewController()
+                self.add(controller)
+            }
+        }
     }
     
     // InitView delegate functions

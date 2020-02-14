@@ -10,7 +10,7 @@ import UIKit
 
 protocol ProfileViewDataSource {
     func getProfileName() -> String
-    func getProfileScore() -> ScoreFormat?
+    func getProfileScore() -> ScoreOverallFormat?
 }
 
 class ProfileView: UIView, ProfileInfoViewDataSource {
@@ -51,13 +51,13 @@ class ProfileView: UIView, ProfileInfoViewDataSource {
     }
     
     func setInfoPosition() {
-        profileInfoView.profileInfo.frame = CGRect(x: profilePictureView.bounds.maxX + bounds.maxX / 10, y: 0, width: bounds.maxX - profilePictureView.bounds.maxX - 2 * bounds.maxX / 20, height: bounds.maxX / 3 + bounds.maxX / 5)
+        profileInfoView.profileInfo.frame = CGRect(x: profilePictureView.bounds.maxX + bounds.maxX / 6, y: 0, width: bounds.maxX - profilePictureView.bounds.maxX - 2 * bounds.maxX / 12, height: bounds.maxX / 3 + bounds.maxX / 5)
         
         profileInfoView.joinedClubView.frame = CGRect(x: 0, y: bounds.maxX / 5 + profilePictureView.bounds.maxY, width: bounds.maxX, height: bounds.maxY - bounds.maxX / 5 - profilePictureView.bounds.maxY)
     }
     
     
-    func getProfileInfo() -> (String, ScoreFormat?) {
+    func getProfileInfo() -> (String, ScoreOverallFormat?) {
         let name = dataSource!.getProfileName()
         let score = dataSource!.getProfileScore()
         return (name, score)

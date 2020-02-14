@@ -20,11 +20,12 @@ protocol ScoreInputPadViewDataSource {
 }
 
 class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate {
-    
+    // MARK: - Properties
     var delegate: ScoreInputPadViewDelegate?
     var dataSource: ScoreInputPadViewDataSource?
     var isFirstShot: Bool = true
     
+    // MARK: - UI Properties
     lazy var frameCounterLabel : UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -32,7 +33,6 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         addSubview(label)
         return label
     } ()
-    
     lazy var numberPadView: NumberPadView = {
         let view = NumberPadView()
         view.dataSource = self
@@ -42,7 +42,6 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         addSubview(view)
         return view
     } ()
-    
     lazy var prevScoreBtn: UIButton = {
         let button = UIButton()
         button.setTitle("<<", for: .normal)
@@ -62,9 +61,9 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         return button
     } ()
     
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        
         if !dataSource!.getNextAvailable(index: -1) {
             prevScoreBtn.alpha = 0.5
             prevScoreBtn.isEnabled = false
@@ -73,7 +72,6 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
             prevScoreBtn.alpha = 1
             prevScoreBtn.isEnabled = true
         }
-        
         if !dataSource!.getNextAvailable(index: 1) {
             nextScoreBtn.alpha = 0.5
             nextScoreBtn.isEnabled = false
@@ -82,14 +80,11 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
             nextScoreBtn.alpha = 1
             nextScoreBtn.isEnabled = true
         }
-        
         let nextAvailableScores = dataSource!.getAvailableScores()
         numberPadView.update(availableSet: nextAvailableScores)
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
         (frameCounterLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 10, from: .minYEdge)
         rect = CGRect(x: rect.minX, y: rect.minY, width: rect.maxX, height: 8 * rect.maxY / 10)
@@ -98,6 +93,7 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         (nextScoreBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 6, from: .minXEdge)
     }
     
+    // MARK: - UIButton action handler
     @objc func scoreBtnHandler(sender: UIButton) {
         if sender.tag == 0 && dataSource!.getNextAvailable(index: -1) {
             print("go back to prev score")
@@ -110,13 +106,13 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         setNeedsDisplay()
     }
     
+    // MARK: - NumberPadViewDataSource Functions
     func getIsFirstTurn() -> Bool {
-        if dataSource!.getSelectedFrame().turn == 0 || dataSource!.getSelectedFrame().turn == 2 {
-            return true
-        }
+        if dataSource!.getSelectedFrame().turn == 0 || dataSource!.getSelectedFrame().turn == 2 { return true }
         return false
     }
-    
+
+    // MARK: - NumberPadViewDelegate Functions
     func setScore(score: Int) {
         delegate!.setScore(score: score)
         setNeedsDisplay()
@@ -131,11 +127,14 @@ protocol NumberPadViewDelegate {
     func setScore(score: Int)
 }
 
+// MARK: - Customed NumberPadView
 class NumberPadView: UIView {
+    // MARK: - Properties
     var dataSource: NumberPadViewDataSource?
     var delegate: NumberPadViewDelegate?
     var numberpads: [NumberPadCell] = []
     
+    // MARK: - UIView Override Functions
     override init(frame: CGRect) {
         super.init(frame: frame)
         for i in 0 ..< 12 {
@@ -145,14 +144,11 @@ class NumberPadView: UIView {
             numberpads.append(tempCell)
         }
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        
         for i in 0 ..< 12 {
             let tempCell = numberpads[i]
             if i == 10 {
@@ -179,24 +175,25 @@ class NumberPadView: UIView {
         }
     }
     
+    // MARK: - UIButton Action Handler
     @objc func numberPadCellBtnHandler(sender: UIButton) {
         delegate!.setScore(score: sender.tag)
     }
     
+    // MARK: - Update all properties and view
     func update(availableSet: [Bool]) {
         for i in 0 ..< 12 {
             if availableSet[i] {
                 numberpads[i].removeFromSuperview()
                 addSubview(numberpads[i])
             }
-            else {
-                numberpads[i].removeFromSuperview()
-            }
+            else { numberpads[i].removeFromSuperview() }
         }
         setNeedsDisplay()
     }
 }
 
+// MARK: - Customed UIButton
 class NumberPadCell: UIButton {
     lazy var label: UILabel = {
         let label = UILabel()

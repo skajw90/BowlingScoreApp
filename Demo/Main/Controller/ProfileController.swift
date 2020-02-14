@@ -8,24 +8,29 @@
 
 import UIKit
 
+protocol ProfileControllerDataSource {
+    func getProfileOverall() -> ScoreOverallFormat?
+}
+
 class ProfileController: ProfileViewDataSource {
-    
+    // MARK: - Properties
+    var dataSource: ProfileControllerDataSource?
     var profileView: ProfileView?
     var name: String?
-    var overall: ScoreFormat?
     
-    init(view: ProfileView, name: String, overall: ScoreFormat?) {
+    // MARK: - Initialize
+    init(view: ProfileView, name: String) {
         self.profileView = view
         self.name = name
-        self.overall = overall
         view.dataSource = self
     }
     
+    // MARK: - ProfileViewDataSource Functions
     func getProfileName() -> String {
         return name!
     }
     
-    func getProfileScore() -> ScoreFormat? {
-        return overall
+    func getProfileScore() -> ScoreOverallFormat? {
+        return dataSource!.getProfileOverall()
     }
 }

@@ -16,7 +16,7 @@ protocol CalendarViewDelegate {
 protocol CalendarViewDataSource {
     func getCalendar() -> [Int]
     func getCurrentDate() -> CalendarData
-    func getAverages(interval: IntervalFormat) -> ScoreFormat
+    func getAverages(interval: IntervalFormat) -> ScoreOverallFormat
     func getSelectedCell() -> Int?
     func hasContent(index: Int) -> Bool
 }
@@ -87,7 +87,7 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
         delegate!.setCalendar(index: index)
     }
     
-    func getAverages(interval: IntervalFormat) -> ScoreFormat {
+    func getAverages(interval: IntervalFormat) -> ScoreOverallFormat {
         return dataSource!.getAverages(interval: interval)
     }
     

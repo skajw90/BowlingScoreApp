@@ -18,30 +18,32 @@ protocol ScoreListControllerDataSource {
     func getCurrentDate() -> CalendarData
     func getUserDetailScores(index: Int) -> GameScore
     func getNumOfData(date: CalendarData) -> Int
-    func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreFormat
+    func getAverages(date: CalendarData, interval: IntervalFormat) -> ScoreOverallFormat
 }
 
 class ScoreListController: ScoreListViewDataSource, ScoreListViewDelegate {
+    
+    // MARK: - Properties
     var delegate: ScoreListControllerDelegate?
     var dataSource: ScoreListControllerDataSource?
     var scoreListView: ScoreListView?
     var currentDate: CalendarData
     
+    // MARK: - Initialize
     init (view: ScoreListView, date: CalendarData) {
         self.scoreListView = view
         self.currentDate = date
         scoreListView!.dataSource = self
         scoreListView!.delegate = self
     }
+
+    // MARK: - ScoreListviewDataSource Functions
+    func getCurrentDate() -> CalendarData { return currentDate }
+    func getScores(tag: Int) -> GameScore { return dataSource!.getUserDetailScores(index: tag) }
+    func getAverages(interval: IntervalFormat) -> ScoreOverallFormat { dataSource!.getAverages(date: currentDate, interval: interval) }
+    func getNumOfData(date: CalendarData) -> Int { dataSource!.getNumOfData(date: date) }
     
-    func getCurrentDate() -> CalendarData {
-        return currentDate
-    }
-    
-    func getScores(tag: Int) -> GameScore {
-        return dataSource!.getUserDetailScores(index: tag)
-    }
-    
+    // MARK: - ScoreListViewDelegate Functions
     func setCalendar(index: Int) {
         let numOfDay = CalendarController().getNumOfDays(year: currentDate.year!, month: currentDate.month!)
         if currentDate.day! + index == 0 {
@@ -49,9 +51,7 @@ class ScoreListController: ScoreListViewDataSource, ScoreListViewDelegate {
                 currentDate.month = 12
                 currentDate.year! -= 1
             }
-            else {
-                currentDate.month! -= 1
-            }
+            else { currentDate.month! -= 1 }
             let lastNumOfDay = CalendarController().getNumOfDays(year: currentDate.year!, month: currentDate.month!)
             currentDate.day = lastNumOfDay
         }
@@ -61,32 +61,12 @@ class ScoreListController: ScoreListViewDataSource, ScoreListViewDelegate {
                 currentDate.month = 1
                 currentDate.year! += 1
             }
-            else {
-                currentDate.month! += 1
-            }
+            else { currentDate.month! += 1 }
         }
-        else {
-            currentDate.day! += index
-        }
+        else { currentDate.day! += index }
         delegate!.setCurrentDate(date: currentDate)
         scoreListView!.updateAll()
     }
-    
-    func getNumOfData(date: CalendarData) -> Int {
-        dataSource!.getNumOfData(date: date)
-    }
-    
-    func addNewGame(date: CalendarData) {
-        print("add new game!")
-        delegate!.openNewGame(date: date)
-    }
-    
-    func editGame(date: CalendarData, index: Int) {
-        print("edit game at \(index)")
-        delegate!.openEditGame()
-    }
-    
-    func getAverages(interval: IntervalFormat) -> ScoreFormat {
-        dataSource!.getAverages(date: currentDate, interval: interval)
-    }
+    func addNewGame(date: CalendarData) { delegate!.openNewGame(date: date) }
+    func editGame(date: CalendarData, index: Int) { delegate!.openEditGame() }
 }

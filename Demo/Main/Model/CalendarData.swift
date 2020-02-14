@@ -12,19 +12,43 @@ struct CalendarData: Codable {
     var day: Int?
     var weekday: WeekDay?
     
-    enum CodingKeys: String, CodingKey {
-        case year = "year"
-        case month = "month"
-        case day = "day"
-        case weekday = "weekday"
+    func compareTo(with: CalendarData) -> Int {
+        if self.equalTo(with: with) {
+            return 0
+        }
+        else if lessThan(with: with) {
+            return -1
+        }
+        else {
+            return 1
+        }
+    }
+    
+    func lessThan(with: CalendarData) -> Bool {
+        if let year = year, let month = month, let day = day {
+            if year < with.year! || (year == with.year! && (month < with.month! || (month == with.month! && day < with.day!))) {
+                return true
+            }
+        }
+        
+        return false
     }
     
     func toString() -> String? {
-        if let year = year, let month = month, let day = day, let weekday = weekday {
-            return "\(month)월 \(day)일 \(weekday)요일, \(year)년"
+        if let year = year, let month = month, let day = day {
+            return "\(month)월 \(day)일 \(year)년"
         }
         else {
             return nil
+        }
+    }
+    
+    func equalTo(with: CalendarData) -> Bool {
+        if year == with.year && month == with.month && day == with.day {
+            return true
+        }
+        else {
+            return false
         }
     }
 }

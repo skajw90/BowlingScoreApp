@@ -18,10 +18,12 @@ protocol ScoreFrameViewDataSource {
 }
 
 class ScoreFrameView: UIView {
+    // MARK: - Properties
     var dataSource: ScoreFrameViewDataSource?
     var delegate: ScoreFrameViewDelegate?
     var frameViews: [FrameView] = []
     
+    // MARK: - UIView override Functions
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.borderWidth = 2
@@ -39,20 +41,18 @@ class ScoreFrameView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         let scores = dataSource!.getScores(tag: tag)
         for i in 0 ..< 10 {
             if let out = scores.getOutput(index: i).score {
                 frameViews[i].scoreOutputLabel.text = "\(out)"
+                frameViews[i].scoreOutputLabel.setTextColor()
             }
         }
         
         for j in 0 ..< 21 {
-            if j == 0 && scores.getInput(index: j) == nil {
-                frameViews[j].scoreInputView.firstScore.backgroundColor = .yellow
-            }
+            if j == 0 && scores.getInput(index: j) == nil { frameViews[j].scoreInputView.firstScore.backgroundColor = .yellow }
             var result = ""
             if let score = scores.getInput(index: j) {
                 result = "\(score)"
@@ -65,9 +65,7 @@ class ScoreFrameView: UIView {
                     }
                 }
                 else {
-                    if j % 2 == 0 {
-                        if score == 11 { result = "X" }
-                    }
+                    if j % 2 == 0 { if score == 11 { result = "X" } }
                     else {
                         if score == 11 {
                             if j == 19 && scores.getInput(index: j - 1) == 11 { result = "X"}
@@ -76,41 +74,32 @@ class ScoreFrameView: UIView {
                     }
                 }
             }
-            if j == 20 {
-                frameViews[9].scoreInputView.thirdScore.text = result
-            }
-            else if j % 2 == 0 {
-                frameViews[j / 2].scoreInputView.firstScore.text = result
-            }
-            else {
-                frameViews[j / 2].scoreInputView.secondScore.text = result
-            }
-            
-            if let delegate = delegate, frameViews[9].scoreOutputLabel.text != nil {
-                delegate.enableSaveScore(isEnable: true)
-            }
+            if j == 20 { frameViews[9].scoreInputView.thirdScore.text = result }
+            else if j % 2 == 0 { frameViews[j / 2].scoreInputView.firstScore.text = result }
+            else { frameViews[j / 2].scoreInputView.secondScore.text = result }
+            if let delegate = delegate, frameViews[9].scoreOutputLabel.text != nil { delegate.enableSaveScore(isEnable: true) }
         }
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         var rect = bounds
         for i in 0 ..< 10 {
             if i != 9 {
-                (frameViews[i].frame, rect) = rect.divided(atDistance: 2 * frame.maxX / 21, from: .minXEdge)
+                (frameViews[i].frame, rect) = rect.divided(atDistance: 2 * bounds.width / 21, from: .minXEdge)
             }
             else {
-                (frameViews[i].frame, rect) = rect.divided(atDistance: 3 * frame.maxX / 21, from: .minXEdge)
+                (frameViews[i].frame, rect) = rect.divided(atDistance: 3 * bounds.width / 21, from: .minXEdge)
             }
         }
     }
     
-    func update() {
-        setNeedsDisplay()
-    }
+    // MARK: - Update all screen
+    func update() { setNeedsDisplay() }
 }
 
+// MARK: - Customed FrameView
 class FrameView: UIView {
+    // MARK: - UI Properties
     lazy var frameLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -120,7 +109,6 @@ class FrameView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var scoreInputView: ScoreInputView = {
         let view = ScoreInputView()
         view.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -128,7 +116,6 @@ class FrameView: UIView {
         addSubview(view)
         return view
     } ()
-    
     lazy var scoreOutputLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -139,22 +126,22 @@ class FrameView: UIView {
         return label
     } ()
     
+    // MARK: - UI override functions
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
-        
         (frameLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 3, from: .minYEdge)
-        
         (scoreInputView.frame, rect) = rect.divided(atDistance: frame.maxY / 3, from: .minYEdge)
-        
         (scoreOutputLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 3, from: .minYEdge)
     }
 }
 
+// MARK: - Customed ScoreInputView
 class ScoreInputView: UIView {
+    // MARK: - Properties
     var isLastFrame: Bool = false
     
+    // MARK: - UI Properties
     lazy var firstScore: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -173,7 +160,6 @@ class ScoreInputView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var thirdScore: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -183,6 +169,7 @@ class ScoreInputView: UIView {
         return label
     } ()
     
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         if !isLastFrame {
@@ -197,6 +184,7 @@ class ScoreInputView: UIView {
         }
     }
     
+    // MARK: - helper method to highlight border
     func highlightBorder(turn: Int, on: Bool) {
         var highlightView = UIView()
         switch turn {
