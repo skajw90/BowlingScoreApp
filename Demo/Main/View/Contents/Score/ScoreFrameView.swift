@@ -74,12 +74,34 @@ class ScoreFrameView: UIView {
                     }
                 }
             }
-            if j == 20 { frameViews[9].scoreInputView.thirdScore.text = result }
-            else if j % 2 == 0 { frameViews[j / 2].scoreInputView.firstScore.text = result }
-            else { frameViews[j / 2].scoreInputView.secondScore.text = result }
+            if j == 19 {
+                frameViews[9].scoreInputView.secondScore.inputLabel.text = result
+                frameViews[9].scoreInputView.secondScore.inputLabel.layer.borderColor = UIColor.clear.cgColor
+                if let bonus = scores.getOutput(index: 9).firstBonusStat, bonus == .split || bonus == .splitMake {
+                    frameViews[9].scoreInputView.secondScore.inputLabel.layer.borderColor = UIColor.red.cgColor
+                }
+            }
+            else if j == 20 {
+                frameViews[9].scoreInputView.thirdScore.inputLabel.text = result
+                frameViews[9].scoreInputView.thirdScore.inputLabel.layer.borderColor = UIColor.clear.cgColor
+                if let bonus = scores.getOutput(index: 9).secondBonusStat, bonus == .split {
+                    frameViews[9].scoreInputView.thirdScore.inputLabel.layer.borderColor = UIColor.red.cgColor
+                }
+            }
+            else if j % 2 == 0 {
+                frameViews[j / 2].scoreInputView.firstScore.inputLabel.text = result
+                if let stat = scores.getOutput(index: j / 2).stat, stat == .split || stat == .splitMake {
+                    frameViews[j / 2].scoreInputView.firstScore.inputLabel.layer.borderColor = UIColor.red.cgColor
+                }
+                else {
+                    frameViews[j / 2].scoreInputView.firstScore.inputLabel.layer.borderColor = UIColor.clear.cgColor
+                }
+            }
+            else { frameViews[j / 2].scoreInputView.secondScore.inputLabel.text = result }
             if let delegate = delegate, frameViews[9].scoreOutputLabel.text != nil { delegate.enableSaveScore(isEnable: true) }
         }
     }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         var rect = bounds
@@ -136,37 +158,46 @@ class FrameView: UIView {
     }
 }
 
+class ScoreInputLabelView: UIView {
+    lazy var inputLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.textAlignment = .center
+        addSubview(label)
+        return label
+    } ()
+    
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        inputLabel.frame = CGRect(x: 0, y: bounds.midY - bounds.maxX / 2, width: bounds.maxX, height: bounds.maxX)
+    }
+}
+
 // MARK: - Customed ScoreInputView
 class ScoreInputView: UIView {
     // MARK: - Properties
     var isLastFrame: Bool = false
     
     // MARK: - UI Properties
-    lazy var firstScore: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.layer.borderWidth = 0.3
-        label.textAlignment = .center
-        addSubview(label)
-        return label
+    lazy var firstScore: ScoreInputLabelView = {
+        let view = ScoreInputLabelView()
+        view.layer.borderWidth = 0.7
+        view.layer.borderColor = UIColor.black.cgColor
+        addSubview(view)
+        return view
     } ()
-    lazy var secondScore: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.layer.borderWidth = 0.3
-        label.textAlignment = .center
-        addSubview(label)
-        return label
+    lazy var secondScore: ScoreInputLabelView = {
+        let view = ScoreInputLabelView()
+        view.layer.borderWidth = 0.7
+        view.layer.borderColor = UIColor.black.cgColor
+        addSubview(view)
+        return view
     } ()
-    lazy var thirdScore: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.layer.borderWidth = 0.3
-        label.textAlignment = .center
-        return label
+    lazy var thirdScore: ScoreInputLabelView = {
+        let view = ScoreInputLabelView()
+        view.layer.borderWidth = 0.7
+        view.layer.borderColor = UIColor.black.cgColor
+        return view
     } ()
     
     // MARK: - UIView Override Functions
@@ -174,12 +205,24 @@ class ScoreInputView: UIView {
         super.draw(rect)
         if !isLastFrame {
             firstScore.frame = CGRect(x: 0, y: 0, width: bounds.maxX / 2, height: bounds.maxY)
+            firstScore.inputLabel.layer.cornerRadius = firstScore.bounds.width / 2
+            firstScore.inputLabel.layer.masksToBounds = true
+            firstScore.inputLabel.layer.borderWidth = 0.6
             secondScore.frame = CGRect(x: bounds.maxX / 2, y: 0, width: bounds.maxX / 2, height: bounds.maxY)
         }
         else {
             firstScore.frame = CGRect(x: 0, y: 0, width: bounds.maxX / 3, height: bounds.maxY)
             secondScore.frame = CGRect(x: bounds.maxX / 3, y: 0, width: bounds.maxX / 3, height: bounds.maxY)
             thirdScore.frame = CGRect(x: 2 * bounds.maxX / 3, y: 0, width: bounds.maxX / 3, height: bounds.maxY)
+            firstScore.inputLabel.layer.cornerRadius = firstScore.bounds.width / 2
+            firstScore.inputLabel.layer.masksToBounds = true
+            firstScore.inputLabel.layer.borderWidth = 0.6
+            secondScore.inputLabel.layer.cornerRadius = secondScore.bounds.width / 2
+            secondScore.inputLabel.layer.masksToBounds = true
+            secondScore.inputLabel.layer.borderWidth = 0.6
+            thirdScore.inputLabel.layer.cornerRadius = thirdScore.bounds.width / 2
+            thirdScore.inputLabel.layer.masksToBounds = true
+            thirdScore.inputLabel.layer.borderWidth = 0.6
             addSubview(thirdScore)
         }
     }

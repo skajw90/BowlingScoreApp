@@ -15,7 +15,7 @@ protocol InitViewDelegate {
 }
 
 class InitView: UIView {
-    
+    // MARK: - Properties
     var delegate: InitViewDelegate?
     var touchViews = [UITouch:TouchSpotView]()
     var touchEnable = true
@@ -23,28 +23,24 @@ class InitView: UIView {
     var pswFilled = false
     var loginEnable = false
     var isEditing = false
-    
     private var id: String?
     private var password: String?
     
+    // MARK: - UI Properties
     lazy var logoView: LogoView = {
         let view = LogoView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .red
         addSubview(view)
-        
         return view
     } ()
-    
     lazy var backgroundView: BackgroundView = {
         let view = BackgroundView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
         addSubview(view)
-        
         return view
     } ()
-    
     lazy var idInputBar: UITextField = {
         let text = UITextField()
         text.tag = 0
@@ -54,10 +50,8 @@ class InitView: UIView {
         text.textColor = .black
         text.clearButtonMode = .whileEditing
         addSubview(text)
-        
         return text
     } ()
-    
     lazy var passwordInputBar: UITextField = {
         let text = UITextField()
         text.tag = 1
@@ -67,10 +61,8 @@ class InitView: UIView {
         text.textColor = .black
         text.clearButtonMode = .whileEditing
         addSubview(text)
-        
         return text
        } ()
-    
     lazy var loginBtnView: UIButton = {
         let btn = UIButton()
         btn.isEnabled = false
@@ -83,7 +75,6 @@ class InitView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var registerBtnView: UIButton = {
         let btn = UIButton()
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +86,6 @@ class InitView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var findUserInfo: UIButton = {
         let btn = UIButton()
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -108,18 +98,12 @@ class InitView: UIView {
         return btn
     } ()
     
-    @objc func loginBtnHandler(sender: Any) {
-        delegate!.login()
-    }
+    // MARK: - UIButton Action Hanlder Functions
+    @objc func loginBtnHandler(sender: Any) { delegate!.login() }
+    @objc func registerBtnHandler(sender: Any) { delegate!.register() }
+    @objc func findInfoBtnHandler(sender: Any) { delegate!.userInfo() }
     
-    @objc func registerBtnHandler(sender: Any) {
-        delegate!.register()
-    }
-    
-    @objc func findInfoBtnHandler(sender: Any) {
-        delegate!.userInfo()
-    }
-    
+    // MARK: - UIView Override Functions
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for _ in touches {
             if isEditing {
@@ -145,25 +129,26 @@ class InitView: UIView {
         }
     }
     
+    // MARK: - Helper Method to draw circle tocuhed spot
     func createViewForTouch( touch: UITouch) {
         let newView = TouchSpotView()
         newView.bounds = CGRect(x: 0, y: 0, width: 1, height: 1)
         newView.center = touch.location(in: self)
-        
         // Add the view and animate it to a new size.
         addSubview(newView)
         UIView.animate(withDuration: 0.2) {
             newView.bounds.size = CGSize(width: 100, height: 100)
         }
-        
         // Save the views internally
         touchViews[touch] = newView
     }
     
+    // MARK: - Get TouchSpotView
     func viewForTouch (touch : UITouch) -> TouchSpotView? {
         return touchViews[touch]
     }
     
+    // MARK: - Remove TouchSpotiew
     func removeViewForTouch (touch : UITouch ) {
         if let view = touchViews[touch] {
             view.removeFromSuperview()

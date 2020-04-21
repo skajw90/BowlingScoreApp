@@ -10,8 +10,11 @@ import UIKit
 
 protocol NewGameViewDelegate {
     func setSelectedFrame(index: Int)
-    func setScore(score: Int)
+    func moveFrameTo(index: Int)
+    func setScoreByPad(score: Int, isSplit: Bool)
+    func setPin(leftPin: Int?)
     func saveScore()
+    func moveToNext()
 }
 
 protocol NewGameViewDataSource {
@@ -20,9 +23,11 @@ protocol NewGameViewDataSource {
     func getNextAvailable(index: Int) -> Bool
     func getScores() -> GameScore
     func getAvailableScores() -> [Bool]
+    func getPinSet(frame: Int) -> [Int]?
+    func isFirstPinInput() -> Bool
 }
 
-class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource, ScoreInputPadViewDelegate, ScoreFrameViewDelegate {
+class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource, ScoreInputPadViewDelegate, ScoreFrameViewDelegate, PinsetPreviewDelegate, ScoreInputPinsetTopViewDataSource, ScoreInputPinsetViewDataSource, ScoreInputPinsetViewDelegate {
     
     // MARK: - Properties
     var dataSource: NewGameViewDataSource?
@@ -65,18 +70,29 @@ class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.red.cgColor
         button.addTarget(self, action: #selector(changeInputMethod), for: UIControl.Event.touchDown)
+        addSubview(button)
         return button
+    } ()
+    lazy var scoreInputPinsetTopView: ScoreInputPinsetTopView = {
+        let view = ScoreInputPinsetTopView()
+        view.dataSource = self
+        addSubview(view)
+        return view
     } ()
     lazy var scoreInputPadView: ScoreInputPadView = {
         let view = ScoreInputPadView()
         view.dataSource = self
         view.delegate = self
         view.backgroundColor = .yellow
+        addSubview(view)
         return view
     } ()
     lazy var scoreInputPinsetView: ScoreInputPinsetView = {
         let view = ScoreInputPinsetView()
-        view.backgroundColor = .green
+        view.delegate = self
+        view.dataSource = self
+        view.backgroundColor = .white
+        addSubview(view)
         return view
     } ()
     override func draw(_ rect: CGRect) {
@@ -88,31 +104,36 @@ class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource
     override func layoutSubviews() {
         super.layoutSubviews()
         changeInputMethodButton.removeFromSuperview()
-        var rect = CGRect(x: bounds.maxX / 32, y: 0, width: 15 * frame.maxX / 16, height: bounds.maxY)
-        var labelRect: CGRect
-        (labelRect, rect) = rect.divided(atDistance: frame.maxY / 12, from: .minYEdge)
-        (dateLabel.frame, labelRect) = labelRect.divided(atDistance: 2 * frame.maxX / 3, from: .minXEdge)
-        (saveButton.frame, labelRect) = labelRect.divided(atDistance: 1 * frame.maxX / 3, from: .minXEdge)
-        (scoreFrameView.frame, rect) = rect.divided(atDistance: frame.maxY / 6, from: .minYEdge)
-        rect = CGRect(x: 0, y: rect.minY, width: frame.maxX, height: rect.maxY)
+        var rect = bounds
+        (scoreFrameView.frame, rect) = rect.divided(atDistance: frame.maxY / 8, from: .minYEdge)
+        (scoreInputPinsetTopView.frame, rect) = rect.divided(atDistance: frame.maxY / 8, from: .minYEdge)
+        var statusRect: CGRect
+        (statusRect, rect) = rect.divided(atDistance: frame.maxY / 12, from: .minYEdge)
+        (changeInputMethodButton.frame, statusRect) = statusRect.divided(atDistance: frame.maxX / 6, from: .minXEdge)
+        (dateLabel.frame, statusRect) = statusRect.divided(atDistance: 4 * frame.maxX / 6, from: .minXEdge)
+        (saveButton.frame, statusRect) = statusRect.divided(atDistance: frame.maxX / 6, from: .minXEdge)
+        var padPinViewRect: CGRect
+        (padPinViewRect, rect) = rect.divided(atDistance: 4 * frame.maxY / 6, from: .minYEdge)
+        scoreInputPinsetView.frame = padPinViewRect
+        scoreInputPadView.frame = padPinViewRect
         if inputMode == .pad {
+            scoreInputPinsetView.pinsetView.setAllbuttonDisable()
             scoreInputPinsetView.removeFromSuperview()
-            (scoreInputPadView.frame, rect) = rect.divided(atDistance: 5 * frame.maxY / 6 - frame.maxY / 12, from: .minYEdge)
             addSubview(scoreInputPadView)
-            changeInputMethodButton.setTitle("PAD", for: .normal)
+            changeInputMethodButton.setTitle("PIN", for: .normal)
         }
         else {
             scoreInputPadView.removeFromSuperview()
-            (scoreInputPinsetView.frame, rect) = rect.divided(atDistance: 5 * frame.maxY / 6 - frame.maxY / 12, from: .minYEdge)
             addSubview(scoreInputPinsetView)
-            changeInputMethodButton.setTitle("PIN", for: .normal)
+            scoreInputPinsetView.pinsetView.setAllbuttonEnable()
+            scoreInputPinsetView.pinsetView.backgroundLabel.text = "T"
+            changeInputMethodButton.setTitle("PAD", for: .normal)
         }
-        changeInputMethodButton.frame = CGRect(x: bounds.maxX / 32, y: frame.maxY / 12 + frame.maxY / 6 + bounds.maxX / 32, width: bounds.maxX / 5, height: bounds.maxX / 10)
         addSubview(changeInputMethodButton)
     }
     
     // MARK: - ScoreFrameViewDataSource Functions
-    func setScore(score: Int) { delegate!.setScore(score: score) }
+    func setScoreByPad(score: Int, isSplit: Bool) { delegate!.setScoreByPad(score: score, isSplit: isSplit) }
     
     // MARK: - ScoreFrameViewDataSource and ScoreInputPadViewDataSource shared Functions
     func getSelectedFrame() -> (frame: Int, turn: Int) { return dataSource!.getSelectedFrame() }
@@ -128,6 +149,32 @@ class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource
     func setCurrentFrameNumber(index: Int) { delegate!.setSelectedFrame(index: index) }
     func getScores(tag: Int) -> GameScore { dataSource!.getScores() }
     
+    // MARK: - PinsetPreviewDelegate Functions
+    func setPin(leftPin: Int?) {
+        delegate!.setPin(leftPin: leftPin)
+    }
+    
+    // MARK: - PinsetPreviewDataSource Functions
+    func getPinSet(frame: Int) -> [Int]? {
+        return dataSource!.getPinSet(frame: frame)
+    }
+    
+    func setCurrentFrameNumberForPin(index: Int) {
+        delegate!.setSelectedFrame(index: index)
+    }
+    func isFirstPinInput() -> Bool {
+        return dataSource!.isFirstPinInput()
+    }
+    
+    func getTurn() -> (frame: Int, turn: Int) {
+        dataSource!.getSelectedFrame()
+    }
+    
+    func moveToNext() {
+        delegate!.moveToNext()
+    }
+    
+    
     // MARK: - UIButton handlers
     @objc func changeInputMethod(sender: Any) {
         if inputMode == .pin { inputMode = .pad }
@@ -136,6 +183,26 @@ class NewGameView: UIView, ScoreFrameViewDataSource, ScoreInputPadViewDataSource
     }
     @objc func saveButtonHanlder(sender: Any) {
         delegate!.saveScore()
+    }
+    
+    // MARK: - UIView Override Functions
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let firstTouch = touches.first
+        guard let location = firstTouch?.location(in: self) else {
+            return
+        }
+        for i in 0 ..< 10 {
+            if isInBoundary(boundary: getFrameRect(index: i), touchPos: location) {
+                delegate!.moveFrameTo(index: i)
+                return
+            }
+        }
+    }
+    func isInBoundary(boundary: CGRect, touchPos: CGPoint) -> Bool {
+        return boundary.contains(touchPos)
+    }
+    func getFrameRect(index: Int) -> CGRect {
+        return scoreFrameView.frameViews[index].frame
     }
 }
 

@@ -16,9 +16,10 @@ protocol BottomMenuSetViewDelegate {
 }
 
 class BottomMenuSetView: UIView {
-    
+    // MARK: - Properties
     var delegate: BottomMenuSetViewDelegate?
     
+    // MARK: - UI Properties
     lazy var recordPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("RECORD", for: .normal)
@@ -29,7 +30,6 @@ class BottomMenuSetView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var graphPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("GRAPH", for: .normal)
@@ -40,7 +40,6 @@ class BottomMenuSetView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var analysisPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("ANALYSIS", for: .normal)
@@ -51,7 +50,6 @@ class BottomMenuSetView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var settingPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("SETTING", for: .normal)
@@ -63,40 +61,19 @@ class BottomMenuSetView: UIView {
         return btn
     } ()
     
-    @objc func recordPrevBtnHandler(sender: Any) {
-        print("recordPrev Clicked")
-        delegate!.openRecord()
-    }
-    
-    @objc func graphPrevBtnHandler(sender: Any) {
-        print("graphPrev Clicked")
-        delegate!.openGraph()
-    }
-    
-    @objc func analysisPrevBtnHandler(sender: Any) {
-        print("analysisPrev Clicked")
-        delegate!.openAnalysis()
-    }
-    
-    @objc func settingPrevBtnHandler(sender: Any) {
-        print("settingPrev Clicked")
-        delegate!.openSetting()
-    }
-    
+    // MARK: - UIView Override Functions
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
         (recordPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
-        
         (graphPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
-        
         (analysisPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
-        
         (settingPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
     }
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-    }
+    // MARK: - UIButton Action Handler Functions
+    @objc func recordPrevBtnHandler(sender: Any) { delegate!.openRecord() }
+    @objc func graphPrevBtnHandler(sender: Any) { delegate!.openGraph() }
+    @objc func analysisPrevBtnHandler(sender: Any) { delegate!.openAnalysis() }
+    @objc func settingPrevBtnHandler(sender: Any) { delegate!.openSetting() }  
 }

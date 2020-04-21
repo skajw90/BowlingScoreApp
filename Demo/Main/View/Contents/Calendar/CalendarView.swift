@@ -22,9 +22,11 @@ protocol CalendarViewDataSource {
 }
 
 class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsViewDelegate, CalendarTopViewDelegate, CalendarTopViewDataSoucre, CalendarBottomViewDataSource {
+    // MARK: - Properties
     var dataSource: CalendarViewDataSource?
     var delegate: CalendarViewDelegate?
     
+    // MARK: - UI Properties
     lazy var calendarTopView: CalendarTopView = {
         let view = CalendarTopView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +36,6 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
         addSubview(view)
         return view
     } ()
-    
     lazy var calendarContentsView: CalendarContentsView = {
         let view = CalendarContentsView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -43,7 +44,6 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
         addSubview(view)
         return view
     } ()
-    
     lazy var calendarBottomView: CalendarBottomView = {
         let view = CalendarBottomView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -53,57 +53,37 @@ class CalendarView: UIView, CalendarContentsViewDataSource, CalendarContentsView
         return view
     } ()
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-    }
-    
-    func updateAll() {
-        calendarContentsView.calendarGridView.updateCells(map: dataSource!.getCalendar())
-        calendarTopView.updateDateLabel()
-        calendarBottomView.setAverages()
-    }
-    
+    // MARK: - UIView Override Functions
     override func layoutSubviews() {
         super.layoutSubviews()
-                
         var rect = bounds
-        
         (calendarTopView.frame, rect) = rect.divided(atDistance: frame.maxY / 10, from: .minYEdge)
-        
         (calendarContentsView.frame, rect) = rect.divided(atDistance: 8 * frame.maxY / 10, from: .minYEdge)
-        
         (calendarBottomView.frame, rect) = rect.divided(atDistance: frame.maxY / 10, from: .minYEdge)
     }
     
-    func getCalendarData() -> [Int] {
-        return dataSource!.getCalendar()
+    // MARK: - Update All data method
+    func updateAll() {
+        calendarContentsView.calendarGridView.updateCells(map: dataSource!.getCalendar())
+        calendarTopView.updateDateLabel()
+        calendarBottomView.updateDateLabel()
     }
     
-    func getCurrentDate() -> CalendarData {
-        return dataSource!.getCurrentDate()
-    }
+    // MARK: - CalendarTopViewDataSource Function
+    func getCurrentDate() -> CalendarData { return dataSource!.getCurrentDate() }
     
-    func setCalendar(index: Int) {
-        delegate!.setCalendar(index: index)
-    }
+    // MARK: - CalendaraTopViewDelegate Function
+    func setCalendar(index: Int) { delegate!.setCalendar(index: index) }
     
-    func getAverages(interval: IntervalFormat) -> ScoreOverallFormat {
-        return dataSource!.getAverages(interval: interval)
-    }
+    // MARK: - CalendarBottomViewDataSource Function
+    func getAverages(interval: IntervalFormat) -> ScoreOverallFormat { return dataSource!.getAverages(interval: interval) }
     
-    func getSelectedCell() -> Int? {
-        return dataSource!.getSelectedCell()
-    }
+    // MARK: - CalendarContentsViewDataSoruce Functions
+    func getSelectedCell() -> Int? { return dataSource!.getSelectedCell() }
+    func getCalendarData() -> [Int] { return dataSource!.getCalendar() }
+    func hasContent(index: Int) -> Bool { dataSource!.hasContent(index: index) }
     
-    func hasContent(index: Int) -> Bool {
-        dataSource!.hasContent(index: index)
-    }
-    
-    func changeCalendar(isPrev: Bool) {
-        delegate!.setCalendar(index: isPrev ? -1 : 1)
-    }
-    
-    func openEditGame(pos: Int) {
-        delegate!.openEditGame(pos: pos)
-    }
+    // MARK: - CalendarContentsViewDelegate Functions
+    func changeCalendar(isPrev: Bool) { delegate!.setCalendar(index: isPrev ? -1 : 1) }
+    func openEditGame(pos: Int) { delegate!.openEditGame(pos: pos) }
 }

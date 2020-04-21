@@ -16,8 +16,10 @@ protocol TopMenuSetViewDelegate {
 }
 
 class TopMenuSetView: UIView {
+    // MARK: - Properties
     var delegate: TopMenuSetViewDelegate?
     
+    // MARK: - UI Properties
     lazy var profilePreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("Profile", for: .normal)
@@ -28,7 +30,6 @@ class TopMenuSetView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var newGamePreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("NEW", for: .normal)
@@ -39,7 +40,6 @@ class TopMenuSetView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var calendarPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("CALENDAR", for: .normal)
@@ -50,7 +50,6 @@ class TopMenuSetView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var cameraPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("CAMERA", for: .normal)
@@ -62,40 +61,19 @@ class TopMenuSetView: UIView {
         return btn
     } ()
     
-    @objc func profilePrevBtnHandler(sender: Any) {
-        print("profilePrev Clicked")
-        delegate!.openProfile()
-    }
-    
-    @objc func newGamePrevBtnHandler(sender: Any) {
-        print("newGamePrev Clicked")
-        delegate!.openScoreListView(date: nil)
-    }
-    
-    @objc func calendarPrevBtnHandler(sender: Any) {
-         print("calendarPrev Clicked")
-        delegate!.openCalendar()
-    }
-    
-    @objc func cameraPrevBtnHandler(sender: Any) {
-         print("cameraPrev Clicked")
-        delegate!.openCamera()
-    }
-    
+    // MARK: - UIView Override Functions
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
         (profilePreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
-        
         (newGamePreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
-        
         (calendarPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
-        
         (cameraPreview.frame, rect) = rect.divided(atDistance: frame.width * 0.25, from: .minXEdge)
     }
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-    }
+    // MARK: - UIButton Action Handler functions
+    @objc func profilePrevBtnHandler(sender: Any) { delegate!.openProfile() }
+    @objc func newGamePrevBtnHandler(sender: Any) { delegate!.openScoreListView(date: nil) }
+    @objc func calendarPrevBtnHandler(sender: Any) { delegate!.openCalendar() }
+    @objc func cameraPrevBtnHandler(sender: Any) { delegate!.openCamera() }
 }

@@ -13,9 +13,11 @@ protocol CalendarBottomViewDataSource {
 }
 
 class CalendarBottomView: UIView {
+    // MARK: - Properties
     var dataSource: CalendarBottomViewDataSource?
     var isCalendar: Bool = false
     
+    // MARK: - UI Properties
     lazy var monthlyDataLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Monthly\nData"
@@ -27,7 +29,6 @@ class CalendarBottomView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var noDataLabel: UILabel = {
         let label = UILabel()
         label.text = "No Data"
@@ -39,7 +40,6 @@ class CalendarBottomView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var highLowLabel: UILabel = {
         let label = UILabel()
         label.text = "H/G: ---\nL/G: ---"
@@ -51,7 +51,6 @@ class CalendarBottomView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var averageLabel: UILabel = {
         let label = UILabel()
         label.text = "AVG: ---"
@@ -63,27 +62,23 @@ class CalendarBottomView: UIView {
         return label
     } ()
     
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        setAverages()
+        updateDateLabel()
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         backgroundColor = .orange
         var rect = bounds
-        
         (monthlyDataLabel.frame, rect) = rect.divided(atDistance: frame.maxX / 5, from: .minXEdge)
         (noDataLabel.frame, rect) = rect.divided(atDistance: frame.maxX / 5, from: .minXEdge)
         (highLowLabel.frame, rect) = rect.divided(atDistance: 3 * frame.maxX / 10, from: .minXEdge)
         (averageLabel.frame, rect) = rect.divided(atDistance: 3 * frame.maxX / 10, from: .minXEdge)
     }
     
+    // MARK: - Helper Methods to update Data to view
     func updateDateLabel() {
-        setAverages()
-    }
-    
-    func setAverages() {
         var score: ScoreOverallFormat?
         if isCalendar {
             score = dataSource!.getAverages(interval: .month)
@@ -93,11 +88,9 @@ class CalendarBottomView: UIView {
             score = dataSource!.getAverages(interval: .day)
             monthlyDataLabel.text = "Daily\nData"
         }
-
         if let high = score!.high, let low = score!.low, let avg = score!.avg {
             noDataLabel.removeFromSuperview()
             highLowLabel.text = "H/G: \(high)\nL/G: \(low)"
-            
             averageLabel.text = "AVG: \(String(format: "%.2f", avg))"
         }
         else {

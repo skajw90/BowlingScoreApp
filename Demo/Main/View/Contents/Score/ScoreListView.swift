@@ -10,7 +10,7 @@ import UIKit
 
 protocol ScoreListViewDelegate {
     func setCalendar(index: Int)
-    func addNewGame(date: CalendarData)
+    func addNewGame(date: CalendarData, index: Int)
     func editGame(date: CalendarData, index: Int)
 }
 
@@ -120,7 +120,7 @@ extension ScoreListView: UITableViewDataSource {
         }
         
         cell.tag = indexPath.row
-        cell.selectionStyle = .none
+//        cell.selectionStyle = .none
         let cellTagGesture = UITapGestureRecognizer()
         cellTagGesture.addTarget(self, action: #selector(rowSelected))
         cell.addGestureRecognizer(cellTagGesture)
@@ -149,11 +149,12 @@ extension ScoreListView: UITableViewDataSource {
     @objc func rowSelected(sender: UITapGestureRecognizer) {
         let cell = sender.view as! CellView
         let row = cell.tag
+        let date = getCurrentDate()
         if row == 0 {
-            delegate!.addNewGame(date: getCurrentDate())
+            delegate!.addNewGame(date: date, index: dataSource!.getNumOfData(date: date) + 1)
         }
         else {
-            delegate!.editGame(date: getCurrentDate(), index: row)
+            delegate!.editGame(date: date, index: row)
         }
     }
     

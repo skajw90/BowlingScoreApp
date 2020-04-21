@@ -13,8 +13,10 @@ protocol MenuPreviewDelegate {
 }
 
 class MenuPreview: UIView {
+    // MARK: - Properties
     var delegate: MenuPreviewDelegate?
     
+    // MARK: - UI Properties
     lazy var menuPreview: UIButton = {
         let btn = UIButton()
         btn.setTitle("MENU", for: .normal)
@@ -25,7 +27,6 @@ class MenuPreview: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var logo: UILabel = {
         let test = UILabel()
         test.text = "LABEL"
@@ -36,15 +37,18 @@ class MenuPreview: UIView {
         return test
     } ()
     
+    // MARK: - UIView Override Functions
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        logo.frame = CGRect(x: 0, y: 0, width: bounds.maxX, height: bounds.height)
+        menuPreview.frame = CGRect(x: 0, y: 0, width: bounds.maxX / 5, height: bounds.height)
+    }
+    
+    // MARK: - UIButton Action Handler Functions
     @objc func menuPrevBtnHandler(sender: Any) {
         print("menuPrev Clicked")
         delegate!.openMenu()
     }
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        logo.frame = CGRect(x: 0, y: 0, width: bounds.maxX, height: bounds.height)
-        menuPreview.frame = CGRect(x: 0, y: 0, width: bounds.maxX / 5, height: bounds.height)
-        
-    }
+    
 }

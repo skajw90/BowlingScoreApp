@@ -8,13 +8,25 @@
 
 import UIKit
 
-protocol ProfileControllerDataSource {
-    func getProfileOverall() -> ScoreOverallFormat?
+protocol ProfileControllerDelegate {
+    func openPictureLibrary()
+    func openSearchRequestController()
+    func openClubViewController(index: Int)
 }
 
-class ProfileController: ProfileViewDataSource {
+protocol ProfileControllerDataSource {
+    func getProfileOverall() -> ScoreOverallFormat?
+    func getProfileImage() -> UIImage?
+    func getNumOfClub() -> Int
+    func getClubName(indexAt: Int) -> String
+}
+
+class ProfileController: ProfileViewDataSource, ProfileViewDelegate {
+    
     // MARK: - Properties
     var dataSource: ProfileControllerDataSource?
+    var delegate: ProfileControllerDelegate?
+    
     var profileView: ProfileView?
     var name: String?
     
@@ -23,6 +35,7 @@ class ProfileController: ProfileViewDataSource {
         self.profileView = view
         self.name = name
         view.dataSource = self
+        view.delegate = self
     }
     
     // MARK: - ProfileViewDataSource Functions
@@ -33,4 +46,29 @@ class ProfileController: ProfileViewDataSource {
     func getProfileScore() -> ScoreOverallFormat? {
         return dataSource!.getProfileOverall()
     }
+    
+    func openPictureLibrary() {
+        delegate!.openPictureLibrary()
+    }
+    
+    func openSearchRequestController() {
+        delegate!.openSearchRequestController()
+    }
+    
+    func openClubViewController(index: Int) {
+        delegate!.openClubViewController(index: index)
+    }
+    
+    func getProfileImage() -> UIImage? {
+        return dataSource!.getProfileImage()
+    }
+    
+    func getNumOfClub() -> Int {
+        return dataSource!.getNumOfClub()
+    }
+    
+    func getClubName(indexAt: Int) -> String {
+        return dataSource!.getClubName(indexAt: indexAt)
+    }
+    
 }

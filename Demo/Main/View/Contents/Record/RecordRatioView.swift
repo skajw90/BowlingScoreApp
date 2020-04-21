@@ -13,8 +13,10 @@ protocol RecordRatioViewDataSource {
 }
 
 class RecordRatioView: UIView {
+    // MARK: - Properties
     var dataSource: RecordRatioViewDataSource?
     
+    // MARK: - UI Properties
     lazy var strikeNameLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Strike"
@@ -23,7 +25,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var strikeInfoLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -32,7 +33,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var spareNameLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Spare"
@@ -41,7 +41,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var spareInfoLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -50,7 +49,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var openNameLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Open"
@@ -59,7 +57,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var openInfoLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -68,7 +65,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var splitNameLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Split"
@@ -77,7 +73,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var splitInfoLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -86,7 +81,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var splitMakeNameLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Split Make"
@@ -95,7 +89,6 @@ class RecordRatioView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var splitMakeInfoLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -105,6 +98,7 @@ class RecordRatioView: UIView {
         return label
     } ()
     
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
@@ -114,29 +108,23 @@ class RecordRatioView: UIView {
         let spareCount = data.spareCount
         let openCount = data.openCount
         let splitCount = data.splitCount
-        let splitMakecount = 0
+        let splitMakecount = data.splitMakeCount
         strikeInfoLabel.text = "\(strikeCount)   (\(String(format: "%.2f", Float(strikeCount) / Float(num) * 100))%)"
         spareInfoLabel.text = "\(spareCount)   (\(String(format: "%.2f", Float(spareCount) / Float(num) * 100))%)"
         openInfoLabel.text = "\(openCount)   (\(String(format: "%.2f", Float(openCount) / Float(num) * 100))%)"
         splitInfoLabel.text = "\(splitCount)   (\(String(format: "%.2f", Float(splitCount) / Float(num) * 100))%)"
-        splitMakeInfoLabel.text = "\(splitMakecount)   (\(String(format: "%.2f", Float(splitMakecount) / Float(num) * 100))%)"
+        splitMakeInfoLabel.text = "\(splitMakecount)   (\(String(format: "%.2f", Float(splitMakecount) / Float(splitCount) * 100))%)"
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
-        
         var leftRect = CGRect()
-        
         (leftRect, rect) = rect.divided(atDistance: 2 * frame.width / 5, from: .minXEdge)
-        
         (strikeNameLabel.frame, leftRect) = leftRect.divided(atDistance: rect.height / 5, from: .minYEdge)
         (spareNameLabel.frame, leftRect) = leftRect.divided(atDistance: rect.height / 5, from: .minYEdge)
         (openNameLabel.frame, leftRect) = leftRect.divided(atDistance: rect.height / 5, from: .minYEdge)
         (splitNameLabel.frame, leftRect) = leftRect.divided(atDistance: rect.height / 5, from: .minYEdge)
         (splitMakeNameLabel.frame, leftRect) = leftRect.divided(atDistance: rect.height / 5, from: .minYEdge)
-        
         (strikeInfoLabel.frame, rect) = rect.divided(atDistance: bounds.height / 5, from: .minYEdge)
         (spareInfoLabel.frame, rect) = rect.divided(atDistance: bounds.height / 5, from: .minYEdge)
         (openInfoLabel.frame, rect) = rect.divided(atDistance: bounds.height / 5, from: .minYEdge)

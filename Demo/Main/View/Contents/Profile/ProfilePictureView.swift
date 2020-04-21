@@ -8,6 +8,6 @@
 
 import UIKit
 
-class ProfilePictureView: UIView {
+class ProfilePictureView: UIImageView {
     
 }

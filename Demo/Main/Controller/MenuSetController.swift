@@ -13,6 +13,9 @@ protocol MenuSetControllerDelegate {
     func setCurrentDate(date: CalendarData)
     func loadUserScore(date: CalendarData)
     func openCamera()
+    func openPictureLibrary()
+    func openSearchRequestController()
+    func openClubViewController(index: Int)
 }
 
 protocol MenuSetControllerDataSource {
@@ -26,9 +29,17 @@ protocol MenuSetControllerDataSource {
     func getRecordScoreDatas() -> [(date: CalendarData?, num: Float?)?]
     func getUserOverallAnalysis() -> StatFormat
     func getRecordInfo() -> (from: CalendarData, to: CalendarData, num: Int)
+    func getScoreFormats(period: CategoryPeriod) -> (periods: [(from: CalendarData, to: CalendarData)], scores: [ScoreFormats])
+    func getToday() -> CalendarData
+    func getAnalysisOverallData(period: CategoryPeriod, frame: Int) -> Details
+//    func getAnalysisPinsSize(period: CategoryPeriod, frame: Int) -> Int
+    func getAnalysisPinSets(period: CategoryPeriod, frame: Int) -> (pins: [PinStatInfo], num: Int)
+    func getProfileImage() -> UIImage?
+    func getNumOfClub() -> Int
+    func getClubName(indexAt: Int) -> String
 }
 
-class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, CalendarControllerDataSource, CalendarControllerDelegate, ScoreListControllerDataSource, ScoreListControllerDelegate, NewGameControllerDelegate, RecordControllerDataSource, ProfileControllerDataSource {
+class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, CalendarControllerDataSource, CalendarControllerDelegate, ScoreListControllerDataSource, ScoreListControllerDelegate, NewGameControllerDelegate, RecordControllerDataSource, ProfileControllerDataSource, ProfileControllerDelegate, GraphControllerDataSource, AnalysisControllerDataSource {
     
     // MARK: - Properties
     var delegate: MenuSetControllerDelegate?
@@ -50,6 +61,7 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         mainView.contentsView.switchViews(selectedType: selectedContents!)
         let controller = ProfileController(view: mainView.contentsView.curView as! ProfileView, name: dataSource!.getUserID())
         controller.dataSource = self
+        controller.delegate = self
     }
     func openScoreListView(date: CalendarData?) {
         if selectedContents == .scorelist { return }
@@ -101,12 +113,16 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
         if selectedContents == .graph { return }
         selectedContents = .graph
         mainView.contentsView.switchViews(selectedType: selectedContents!)
+        let controller = GrpahController(view: mainView.contentsView.curView as! GraphView)
+        controller.dataSource = self
     }
     func openAnalysis() {
         if selectedContents == .analysis { return }
         print("action open Analysis")
         selectedContents = .analysis
         mainView.contentsView.switchViews(selectedType: selectedContents!)
+        let controller = AnalysisController(view: mainView.contentsView.curView as! AnalysisView)
+        controller.dataSource = self
         // switch analysis view
     }
     func openSetting() {
@@ -118,10 +134,19 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
     }
     
     // MARK: - ProfileControllerDataSource Function
-    func getProfileOverall() -> ScoreOverallFormat? {
-        dataSource!.getUserOverall()
+    func getProfileOverall() -> ScoreOverallFormat? { dataSource!.getUserOverall() }
+    func getProfileImage() -> UIImage? { dataSource!.getProfileImage() }
+    func getNumOfClub() -> Int {
+        return dataSource!.getNumOfClub()
     }
     
+    func getClubName(indexAt: Int) -> String {
+        return dataSource!.getClubName(indexAt: indexAt)
+    }
+    // MARK: - ProfileControllerDelegate Function
+    func openPictureLibrary() { delegate!.openPictureLibrary() }
+    func openSearchRequestController() { delegate!.openSearchRequestController() }
+    func openClubViewController(index: Int) {delegate!.openClubViewController(index: index) }
     // MARK: - CalendarControllerDataSource Functions
     func hasContentsInMonth(date: CalendarData) -> [Bool] { return dataSource!.hasContentsInMonth(date: date) }
     // MARK: CalendarControllerDelegate Functions
@@ -136,22 +161,49 @@ class MenuSetController: TopMenuSetViewDelegate, BottomMenuSetViewDelegate, Cale
     func getUserDetailScores(index: Int) -> GameScore { return dataSource!.getUserDetailScores(index: index) }
     func getNumOfData(date: CalendarData) -> Int { return dataSource!.getNumUserScoreData() }
     // MARK: - ScoreListControllerDelegate Functions
-    func openNewGame(date: CalendarData) {
+    func openNewGame(date: CalendarData, index: Int) {
         if selectedContents == .newGame { return }
         delegate!.setCurrentDate(date: date)
         selectedContents = .newGame
         mainView.contentsView.switchViews(selectedType: .newGame)
-        let controller = NewGameController(view: mainView.contentsView.curView as! NewGameView, date: date)
+        let controller = NewGameController(view: mainView.contentsView.curView as! NewGameView, date: date, gameID: index)
         controller.delegate = self
     }
     func setCurrentDate(date: CalendarData) { delegate!.setCurrentDate(date: date) }
-    func openEditGame() { }
+    func openEditGame(controller: ScoreListController, index: Int) {
+        let test = getUserDetailScores(index: dataSource!.getNumUserScoreData() - index + 1)
+        delegate!.setCurrentDate(date: getCurrentDate())
+        selectedContents = .newGame
+        mainView.contentsView.switchViews(selectedType: .newGame)
+        let controller = NewGameController(view: mainView.contentsView.curView as! NewGameView, date: getCurrentDate(), gameID: index)
+        controller.gameScore = test
+        controller.curFrame = 21
+        controller.selectedFrame = 0
+        controller.delegate = self
+    }
     
     // MARK: - NewGameControllerDelegate Functions
     func saveScores(score: GameScore, date: CalendarData) { delegate!.saveUserInfo(score: score, date: date) }
     
-    // MARK: - RecordController DataSource Functions
+    // MARK: - RecordControllerDataSource Functions
     func getRecordInfo() -> (from: CalendarData, to: CalendarData, num: Int) { return dataSource!.getRecordInfo() }
     func getRecordScoreDatas() -> [(date: CalendarData?, num: Float?)?] { dataSource!.getRecordScoreDatas() }
     func getUserOverallAnalysis() -> StatFormat { return dataSource!.getUserOverallAnalysis() }
+    
+    // MARK: - GraphControleerDataSource Functions
+    func getScoreFormats(period: CategoryPeriod) -> (periods: [(from: CalendarData, to: CalendarData)], scores: [ScoreFormats]) { return dataSource!.getScoreFormats(period: period) }
+    func getToday() -> CalendarData { return dataSource!.getToday()}
+    
+    // MARK: - AnalysisControllerDataSource Functions
+    func getAnalysisOverallData(period: CategoryPeriod, frame: Int) -> Details {
+        return dataSource!.getAnalysisOverallData(period: period, frame: frame)
+    }
+    
+//    func getAnalysisPinsSize(period: CategoryPeriod, frame: Int) -> Int {
+//        return dataSource!.getAnalysisPinsSize(period: period, frame: frame)
+//    }
+    
+    func getAnalysisPinSets(period: CategoryPeriod, frame: Int) -> (pins: [PinStatInfo], num: Int) {
+        return dataSource!.getAnalysisPinSets(period: period, frame: frame)
+    }
 }

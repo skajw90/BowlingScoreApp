@@ -15,8 +15,10 @@ protocol CameraOperatorViewDelegate {
 }
 
 class CameraOperatorView: UIView {
+    // MARK: - Properties
     var delegate: CameraOperatorViewDelegate?
     
+    // MARK: - UI Properties
     lazy var takePhotoButton: UIButton = {
         let button = UIButton()
         button.setTitle("Take Photo", for: .normal)
@@ -24,7 +26,6 @@ class CameraOperatorView: UIView {
         addSubview(button)
         return button
     } ()
-    
     lazy var cancelCameraButton: UIButton = {
         let button = UIButton()
         button.setTitle("Cancel", for: .normal)
@@ -32,7 +33,6 @@ class CameraOperatorView: UIView {
         addSubview(button)
         return button
     } ()
-    
     lazy var retakeCameraButton: UIButton = {
         let button = UIButton()
         button.setTitle("Retake", for: .normal)
@@ -40,32 +40,20 @@ class CameraOperatorView: UIView {
         return button
     } ()
     
-    @objc func cancelCamera(sender: UIButton) {
-        delegate!.cancelCamera()
-    }
-        
-    @objc func takePhoto(sender: UIButton) {
-        delegate!.takePicture()
-        print("take PHoto in operator view")
-    }
-        
-    @objc func retakeCamera(sender: UIButton) {
-        delegate!.retakeCamera()
-    }
-    
-    func addRetakeCameraView() {
-        addSubview(retakeCameraButton)
-    }
-    
-    func removeRetakeCameraView() {
-        retakeCameraButton.removeFromSuperview()
-    }
-    
+    // MARK: - UIView Override Functions
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         cancelCameraButton.frame = CGRect(x: 0, y: 0, width: bounds.width / 4, height: bounds.height)
         takePhotoButton.frame = CGRect(x: 3 * bounds.width / 8 , y: 0, width: bounds.width / 4, height: bounds.height)
         retakeCameraButton.frame = CGRect(x: 3 * bounds.width / 4, y: 0, width: bounds.width / 4, height: bounds.height)
     }
+    
+    // MARK: - UIButton Action Hanlder Functions
+    @objc func cancelCamera(sender: UIButton) { delegate!.cancelCamera() }
+    @objc func takePhoto(sender: UIButton) { delegate!.takePicture() }
+    @objc func retakeCamera(sender: UIButton) { delegate!.retakeCamera() }
+    
+    // MARK: - Helper Method to set buttons
+    func addRetakeCameraView() { addSubview(retakeCameraButton) }
+    func removeRetakeCameraView() { retakeCameraButton.removeFromSuperview() }
 }

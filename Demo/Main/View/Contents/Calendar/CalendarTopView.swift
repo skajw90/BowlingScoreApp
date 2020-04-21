@@ -17,11 +17,13 @@ protocol CalendarTopViewDataSoucre {
 }
 
 class CalendarTopView: UIView {
+    // MARK: - Properties
     var selectedDate: Date?
     var dataSource: CalendarTopViewDataSoucre?
     var delegate: CalendarTopViewDelegate?
     var isCalendar = false
     
+    // MARK: - UI Properties
     lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -30,7 +32,6 @@ class CalendarTopView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var leftBtn: UIButton = {
         let btn = UIButton()
         btn.setTitle("<<", for: .normal)
@@ -40,7 +41,6 @@ class CalendarTopView: UIView {
         addSubview(btn)
         return btn
     } ()
-    
     lazy var rightBtn: UIButton = {
         let btn = UIButton()
         btn.setTitle(">>", for: .normal)
@@ -50,12 +50,22 @@ class CalendarTopView: UIView {
         addSubview(btn)
         return btn
     } ()
-        
+      
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         updateDateLabel()
     }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        backgroundColor = .orange
+        var rect = bounds
+        (leftBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)
+        (dateLabel.frame, rect) = rect.divided(atDistance: frame.maxX / 2, from: .minXEdge)
+        (rightBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)
+    }
     
+    // MARK: - Helper Method to update data
     func updateDateLabel() {
         let date = dataSource!.getCurrentDate()
         let year = date.year!
@@ -64,22 +74,7 @@ class CalendarTopView: UIView {
         dateLabel.text = "\(month)월 \(day) \(year)년"
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        backgroundColor = .orange
-        var rect = bounds
-        
-        (leftBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)
-        (dateLabel.frame, rect) = rect.divided(atDistance: frame.maxX / 2, from: .minXEdge)
-        (rightBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 4, from: .minXEdge)
-        
-    }
-    
-    @objc func leftBtnHandler(sender: Any) {
-        delegate!.setCalendar(index: -1)
-    }
-    
-    @objc func rightBtnHandler(sender: Any) {
-        delegate!.setCalendar(index: 1)
-    }
+    // MARK: - UIButton Action Hanlder
+    @objc func leftBtnHandler(sender: Any) { delegate!.setCalendar(index: -1) }
+    @objc func rightBtnHandler(sender: Any) { delegate!.setCalendar(index: 1) }
 }

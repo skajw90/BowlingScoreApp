@@ -13,72 +13,59 @@ protocol ProfileInfoDataSource {
 }
 
 class ProfileInfo: UIView {
+    // MARK: - Properties
     var dataSource: ProfileInfoDataSource?
-    var record: Bool = false
     
-    lazy var nameLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.textAlignment = .left
+    // MARK: - UI Properties
+    lazy var nameLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        return label
+    } ()
+    lazy var highScoreLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        return label
+    } ()
+    lazy var lowScorelabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        return label
+    } ()
+    lazy var averageLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        return label
+    } ()
+    lazy var numOfGameLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         return label
     } ()
     
-    lazy var highScoreLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.textAlignment = .left
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
-        return label
-    } ()
-    
-    lazy var lowScorelabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.textAlignment = .left
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
-        return label
-    } ()
-    
-    lazy var averageLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.textAlignment = .left
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
-        return label
-    } ()
-    
-    lazy var numOfGameLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.textAlignment = .left
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
-        return label
-    } ()
-    
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        DispatchQueue.main.async {
-            if self.record {
-                self.backgroundColor = .white
-            }
-            else {
-                self.backgroundColor = .green
-            }
-            self.update()
-        }
+        update()
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
-        
         (nameLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 3, from: .minYEdge)
         (highScoreLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 6, from: .minYEdge)
         (lowScorelabel.frame, rect) = rect.divided(atDistance: frame.maxY / 6, from: .minYEdge)
@@ -86,8 +73,10 @@ class ProfileInfo: UIView {
         (numOfGameLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 6, from: .minYEdge)
     }
     
+    // MARK: - Update all data method
     func update() {
         nameLabel.text = "\(dataSource!.getProfileInfo().0)"
+        nameLabel.makeOutLine(oulineColor: #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1), foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
         nameLabel.textColor = .black
         if let score = dataSource!.getProfileInfo().1, let high = score.high, let low = score.low, let avg = score.avg {
             highScoreLabel.text = "HIGH: \(high)"
@@ -95,12 +84,23 @@ class ProfileInfo: UIView {
             averageLabel.text = "AVG: \(String(format: "%.2f", avg))"
             numOfGameLabel.text = "PLAYED: \(score.numOfGame)"
         }
-        
         else {
             highScoreLabel.text = "HIGH: ---"
             lowScorelabel.text = "LOW: ---"
             averageLabel.text = "AVG: ---"
             numOfGameLabel.text = "PLAYED: 0"
         }
+    }
+}
+
+extension UILabel{
+    func makeOutLine(oulineColor: UIColor, foregroundColor: UIColor) {
+        let strokeTextAttributes = [
+            NSAttributedString.Key.strokeColor : oulineColor,
+            NSAttributedString.Key.foregroundColor : foregroundColor,
+            NSAttributedString.Key.strokeWidth : -4.0,
+            NSAttributedString.Key.font : self.font ?? 10
+            ] as [NSAttributedString.Key : Any]
+        self.attributedText = NSMutableAttributedString(string: self.text ?? "", attributes: strokeTextAttributes)
     }
 }

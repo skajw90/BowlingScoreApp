@@ -10,10 +10,12 @@ import UIKit
 
 class CalendarWeekView: UIView {
     
+    // MARK: - UIView Override Function
     override func draw(_ rect: CGRect) {
         initializeWeekDay()
     }
     
+    // MARK: - Helper Method to draw week texts
     func initializeWeekDay() {
         for i in 0 ..< 7 {
             let label = UILabel()

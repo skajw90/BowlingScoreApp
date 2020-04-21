@@ -29,6 +29,8 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
     var todayCell: Int?
     var curCalendarMap: [Int] = []
     
+    
+    
     // MARK: - Initialize
     init() { currentDate = CalendarData() }
     init(view: CalendarView) {
@@ -98,7 +100,7 @@ class CalendarController: CalendarViewDataSource, CalendarViewDelegate {
         return (curMonth, curYear)
     }
     
-     // MARK: - CalendarViewDataSource Functions
+    // MARK: - CalendarViewDataSource Functions
     func getCalendar() -> [Int] { return curCalendarMap }
     func getCurrentDate() -> CalendarData { return currentDate }
     func getAverages(interval: IntervalFormat) -> ScoreOverallFormat { dataSource!.getAverages(date: dataSource!.getCurrentDate(), interval: interval) }

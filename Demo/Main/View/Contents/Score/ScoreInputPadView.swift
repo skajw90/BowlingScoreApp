@@ -10,7 +10,7 @@ import UIKit
 
 protocol ScoreInputPadViewDelegate {
     func setCurrentFrameNumber(index: Int)
-    func setScore(score: Int)
+    func setScoreByPad(score: Int, isSplit: Bool)
 }
 
 protocol ScoreInputPadViewDataSource {
@@ -23,8 +23,7 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
     // MARK: - Properties
     var delegate: ScoreInputPadViewDelegate?
     var dataSource: ScoreInputPadViewDataSource?
-    var isFirstShot: Bool = true
-    
+    var isSplit: Bool = false
     // MARK: - UI Properties
     lazy var frameCounterLabel : UILabel = {
         let label = UILabel()
@@ -42,6 +41,7 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         addSubview(view)
         return view
     } ()
+
     lazy var prevScoreBtn: UIButton = {
         let button = UIButton()
         button.setTitle("<<", for: .normal)
@@ -57,6 +57,14 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         button.setTitleColor(.black, for: .normal)
         button.tag = 1
         button.addTarget(self, action: #selector(scoreBtnHandler), for: UIControl.Event.touchDown)
+        addSubview(button)
+        return button
+    } ()
+    lazy var splitButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("SPLIT", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(splitBtnHandler), for: UIControl.Event.touchDown)
         addSubview(button)
         return button
     } ()
@@ -86,7 +94,7 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
     override func layoutSubviews() {
         super.layoutSubviews()
         var rect = bounds
-        (frameCounterLabel.frame, rect) = rect.divided(atDistance: frame.maxY / 10, from: .minYEdge)
+        (splitButton.frame, rect) = rect.divided(atDistance: frame.maxY / 10, from: .minYEdge)
         rect = CGRect(x: rect.minX, y: rect.minY, width: rect.maxX, height: 8 * rect.maxY / 10)
         (prevScoreBtn.frame, rect) = rect.divided(atDistance: frame.maxX / 6, from: .minXEdge)
         (numberPadView.frame, rect) = rect.divided(atDistance: 2 * frame.maxX / 3, from: .minXEdge)
@@ -106,15 +114,22 @@ class ScoreInputPadView: UIView, NumberPadViewDataSource, NumberPadViewDelegate 
         setNeedsDisplay()
     }
     
+    @objc func splitBtnHandler(sender: UIButton) {
+        isSplit = !isSplit
+    }
+    
     // MARK: - NumberPadViewDataSource Functions
     func getIsFirstTurn() -> Bool {
-        if dataSource!.getSelectedFrame().turn == 0 || dataSource!.getSelectedFrame().turn == 2 { return true }
+        if dataSource!.getSelectedFrame().turn == 0 || dataSource!.getSelectedFrame().turn == 2 {
+            isSplit = false
+            return true
+        }
         return false
     }
 
     // MARK: - NumberPadViewDelegate Functions
-    func setScore(score: Int) {
-        delegate!.setScore(score: score)
+    func setScoreByPad(score: Int) {
+        delegate!.setScoreByPad(score: score, isSplit: isSplit)
         setNeedsDisplay()
     }
 }
@@ -124,7 +139,7 @@ protocol NumberPadViewDataSource {
 }
 
 protocol NumberPadViewDelegate {
-    func setScore(score: Int)
+    func setScoreByPad(score: Int)
 }
 
 // MARK: - Customed NumberPadView
@@ -177,7 +192,7 @@ class NumberPadView: UIView {
     
     // MARK: - UIButton Action Handler
     @objc func numberPadCellBtnHandler(sender: UIButton) {
-        delegate!.setScore(score: sender.tag)
+        delegate!.setScoreByPad(score: sender.tag)
     }
     
     // MARK: - Update all properties and view
@@ -210,4 +225,8 @@ class NumberPadCell: UIButton {
         super.draw(rect)
         label.frame = bounds
     }
+}
+
+class PinPadView: UIView {
+    
 }

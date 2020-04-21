@@ -9,22 +9,19 @@
 import UIKit
 
 class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
-
+    
+    // MARK: - Properties
     var nextView: Bool = true
     
-    var initView: InitView {
-        return view as! InitView
-    }
+    // MARK: - UI Properties
+    var initView: InitView { return view as! InitView }
 
-    override func loadView() {
-        view = InitView()
-    }
-    
+    // MARK: UIViewController Override Functions
+    override func loadView() { view = InitView() }
     override func viewDidLoad() {
         super.viewDidLoad()
         initView.frame = view.frame
         NSLayoutConstraint.activate([
-            
             initView.backgroundView.leftAnchor.constraint(equalTo: view.leftAnchor),
             initView.backgroundView.rightAnchor.constraint(equalTo: view.rightAnchor),
             initView.backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -61,22 +58,24 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
             initView.registerBtnView.bottomAnchor.constraint(equalTo: initView.findUserInfo.bottomAnchor)
 
         ])
-        
         initView.delegate = self
         initView.idInputBar.delegate = self
         initView.passwordInputBar.delegate = self
         
-        DispatchQueue.main.async {
-            print("auto login")
-            if self.nextView {
-                self.removeViews()
-                let controller = MainViewController()
-                self.add(controller)
-            }
-        }
+        // Make Auto login if qualified
+        // TODO: need to make comparing id
+//        DispatchQueue.main.async {
+//            
+//            if self.nextView {
+//                print("auto login")
+//                self.removeViews()
+//                let controller = MainViewController()
+//                self.add(controller)
+//            }
+//        }
     }
     
-    // InitView delegate functions
+    // MARK: - InitViewDelegate functions
     func login() {
         print("login")
         // send data to server login id,
@@ -87,56 +86,43 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
         let controller = MainViewController()
         add(controller)
     }
-    
     func register() {
         print("register")
+        let controller = InitRegisterController()
+        present(controller, animated: true, completion: nil)
+        //add(controller)
     }
-    
     func userInfo() {
         print("user info")
     }
     
-    // textfield delegate functions
+    // MARK: - UITextfieldDelegate Functions
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.backgroundColor = .lightGray
         initView.isEditing = true
-        print("Editing is began")
     }
-    
     func textFieldDidEndEditing(_ textField: UITextField) {
-        print("Editing ended")
         if let text = textField.text, text.count > 0 {
             print(text)
             textField.backgroundColor = .white
-            if textField.tag == 0 {
-                initView.idFilled = true
-            }
-            else {
-                initView.pswFilled = true
-            }
-            if initView.idFilled && initView.pswFilled {
-                initView.loginBtnView.isEnabled = true
-            }
+            if textField.tag == 0 { initView.idFilled = true }
+            else { initView.pswFilled = true }
+            if initView.idFilled && initView.pswFilled { initView.loginBtnView.isEnabled = true }
         }
         else {
-            print("not entered")
             textField.backgroundColor = .red
             initView.loginEnable = false
-            if textField.tag == 0 {
-                initView.idFilled = false
-            }
-            else {
-                initView.pswFilled = false
-            }
+            if textField.tag == 0 { initView.idFilled = false }
+            else { initView.pswFilled = false }
         }
     }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         initView.isEditing = false
         textField.resignFirstResponder()
         return true
     }
     
+    // MARK: - Helper MEthod to remove all views
     func removeViews() {
            initView.backgroundView.removeFromSuperview()
            initView.logoView.removeFromSuperview()
@@ -148,7 +134,7 @@ class ViewController: UIViewController, InitViewDelegate, UITextFieldDelegate {
        }
 }
 
-// extension class for uiview controller to add and remove view controller
+// MARK: - extension class for uiview controller to add and remove view controller
 extension UIViewController {
     func add(_ child: UIViewController) {
         addChild(child)
@@ -158,9 +144,7 @@ extension UIViewController {
     }
     
     func remove() {
-        guard parent != nil else {
-            return
-        }
+        guard parent != nil else { return }
         willMove(toParent: nil)
         view.removeFromSuperview()
         removeFromParent()

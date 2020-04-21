@@ -9,9 +9,9 @@
 import UIKit
 
 protocol ScoreListControllerDelegate {
-    func openNewGame(date: CalendarData)
+    func openNewGame(date: CalendarData, index: Int)
     func setCurrentDate(date: CalendarData)
-    func openEditGame()
+    func openEditGame(controller: ScoreListController, index: Int)
 }
 
 protocol ScoreListControllerDataSource {
@@ -67,6 +67,6 @@ class ScoreListController: ScoreListViewDataSource, ScoreListViewDelegate {
         delegate!.setCurrentDate(date: currentDate)
         scoreListView!.updateAll()
     }
-    func addNewGame(date: CalendarData) { delegate!.openNewGame(date: date) }
-    func editGame(date: CalendarData, index: Int) { delegate!.openEditGame() }
+    func addNewGame(date: CalendarData, index: Int) { delegate!.openNewGame(date: date, index: index) }
+    func editGame(date: CalendarData, index: Int) { delegate!.openEditGame(controller: self, index: index) }
 }

@@ -19,38 +19,26 @@ protocol CameraScoreViewDataSource {
 }
 
 class CameraScoreView: UIView, CameraOperatorViewDelegate {
-    func cancelCamera() {
-        print("dismiss, and rerun camera")
-        delegate!.retakeCamera()
-    }
     
-    func takePicture() {
-        print("save all selected items")
-    }
-    
-    func retakeCamera() {
-        print("Edit selected item")
-    }
-    
+    // MARK: - Properties
     var dataSource: CameraScoreViewDataSource?
     var delegate: CameraScoreviewDelegate?
     var selectedRaw: [Bool] = []
+    
+    // MARK: - UI Properties
     lazy var scoreButton: [UIButton] = []
     lazy var scoreLabel: [UILabel] = []
-    
     lazy var scoreListView: UIScrollView = {
         let view = UIScrollView()
         view.backgroundColor = .white
         addSubview(view)
         return view
     } ()
-    
     lazy var actualResultLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         return label
     } ()
-    
     lazy var operatorView: CameraOperatorView = {
         let view = CameraOperatorView()
         view.delegate = self
@@ -61,7 +49,6 @@ class CameraScoreView: UIView, CameraOperatorViewDelegate {
         addSubview(view)
         return view
     } ()
-    
     lazy var editButton: UIButton = {
         let button = UIButton()
         button.setTitle("Edit", for: .normal)
@@ -73,10 +60,29 @@ class CameraScoreView: UIView, CameraOperatorViewDelegate {
         return button
     } ()
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+    // MARK: - UIView Override Functions
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        var rect = bounds
+        (scoreListView.frame, rect) = rect.divided(atDistance: 4 * bounds.height / 5, from: .minYEdge)
+        (operatorView.frame, rect) = rect.divided(atDistance: bounds.height / 5, from: .minYEdge)
     }
     
+    // MARK: - UIButton Action Handler Function
+    @objc func buttonClickHandler(sender: UIButton) {
+           print("\(sender.tag) clicked")
+           // need to add edit or save button or open edit game view
+           if selectedRaw[sender.tag] == true {
+               selectedRaw[sender.tag] = false
+               scoreButton[sender.tag].backgroundColor = .clear
+           }
+           else {
+               selectedRaw[sender.tag] = true
+               scoreButton[sender.tag].backgroundColor = .systemBlue
+           }
+       }
+    
+    // MARK: - Helper Method to change Button Properties
     func resetButton() {
         for i in 0 ..< scoreButton.count {
             scoreButton[i].removeFromSuperview()
@@ -87,23 +93,18 @@ class CameraScoreView: UIView, CameraOperatorViewDelegate {
         actualResultLabel.text = ""
     }
     
+    // MARK: - Helper Method to update Data
     func update() {
         resetButton()
-        
         let data = dataSource!.getLineDataFromCamera()
         let labelData = dataSource!.getTestStringData()
         let actualData = dataSource!.getTestActualData()
-        
         let testReusltLabel = UILabel()
         testReusltLabel.text = ""
         for i in 0 ..< actualData.count {
             testReusltLabel.text! += " \(actualData[i])"
-//            for j in 0 ..< actualData[i].count {
-//                
-//            }
             testReusltLabel.text! += "\n"
         }
-        
         for i in 0 ..< data.count {
             let button = UIButton()
             selectedRaw.append(false)
@@ -141,32 +142,21 @@ class CameraScoreView: UIView, CameraOperatorViewDelegate {
         testReusltLabel.frame = CGRect(x: 0, y: CGFloat(2 * data.count + 1) *
         3 * bounds.height / 16 + bounds.height / 16, width: frame.width, height: 2 * bounds.height)
         scoreListView.addSubview(testReusltLabel)
-        
         scoreListView.contentSize = scoreListView.subviews.reduce(CGRect.zero, {
            return $0.union($1.frame)
         }).size
         scoreListView.contentSize.width = 0
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        var rect = bounds
-        
-        (scoreListView.frame, rect) = rect.divided(atDistance: 4 * bounds.height / 5, from: .minYEdge)
-        (operatorView.frame, rect) = rect.divided(atDistance: bounds.height / 5, from: .minYEdge)
+    // MARK: - CameraOperatorViewdelegate Functions
+    func cancelCamera() {
+        print("dismiss, and rerun camera")
+        delegate!.retakeCamera()
     }
-    
-    @objc func buttonClickHandler(sender: UIButton) {
-        print("\(sender.tag) clicked")
-        // need to add edit or save button or open edit game view
-        if selectedRaw[sender.tag] == true {
-            selectedRaw[sender.tag] = false
-            scoreButton[sender.tag].backgroundColor = .clear
-        }
-        else {
-            selectedRaw[sender.tag] = true
-            scoreButton[sender.tag].backgroundColor = .systemBlue
-        }
+    func takePicture() {
+        print("save all selected items")
+    }
+    func retakeCamera() {
+        print("Edit selected item")
     }
 }

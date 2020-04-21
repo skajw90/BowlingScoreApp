@@ -13,8 +13,10 @@ protocol RecordInfoViewDataSoucre {
 }
 
 class RecordInfoView: UIView {
+    // MARK: - Properties
     var dataSource: RecordInfoViewDataSoucre?
     
+    // MARK: - UI Properties
     lazy var periodLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Period"
@@ -23,7 +25,6 @@ class RecordInfoView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var periodDataLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -33,7 +34,6 @@ class RecordInfoView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var numOfGameLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Played"
@@ -42,7 +42,6 @@ class RecordInfoView: UIView {
         addSubview(label)
         return label
     } ()
-    
     lazy var numOfGameDataLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -51,21 +50,17 @@ class RecordInfoView: UIView {
         return label
     } ()
     
+    // MARK: - UIView Override Functions
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        
         let data = dataSource!.getRecordInfo()
         periodDataLabel.text = ":  \(data.from.toString()!)\n   ~ \(data.to.toString()!)"
-       
         numOfGameDataLabel.text = ":  \(data.num)"
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         var rect = bounds
         var leftRect = CGRect()
-        
         (leftRect, rect) = rect.divided(atDistance: 2 * frame.width / 5, from: .minXEdge)
         (periodLabel.frame, leftRect) = leftRect.divided(atDistance: frame.height / 2, from: .minYEdge)
         (numOfGameLabel.frame, leftRect) = leftRect.divided(atDistance: frame.height, from: .minYEdge)

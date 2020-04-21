@@ -9,13 +9,13 @@
 import Foundation
 
 struct RecordScore: Codable {
+    // MARK: - Properties
     var high: Float?
     var highDate: CalendarData?
     var low: Float?
     var lowDate: CalendarData?
     var avg: Float?
     var numOfGame: Int
-    
     var highSeries: Float?
     var highSeriesDate: CalendarData?
     var numOfLower150: Float
@@ -23,22 +23,16 @@ struct RecordScore: Codable {
     var numOfUpper250: Float
     var numOfPerfect: Float
     
+    // MARK: - Mutating struct to set values
     mutating func setCompareNums(num: Int) {
         numOfGame += 1
-        if num < 150 {
-            numOfLower150 += 1
-        }
-        if num >= 200 {
-            numOfUpper200 += 1
-        }
-        if num >= 250 {
-            numOfUpper250 += 1
-        }
-        if num == 300 {
-            numOfPerfect += 1
-        }
+        if num < 150 { numOfLower150 += 1 }
+        if num >= 200 { numOfUpper200 += 1 }
+        if num >= 250 { numOfUpper250 += 1 }
+        if num == 300 { numOfPerfect += 1}
     }
     
+    // MARK: - toArray function to make values as list
     func toArray() -> [(date: CalendarData?, num: Float?)?] {
         var array: [(date: CalendarData?, num: Float?)?] = []
         array.append((date: highDate, num: high))
@@ -49,7 +43,6 @@ struct RecordScore: Codable {
         array.append((date: nil, num: numOfUpper200))
         array.append((date: nil, num: numOfUpper250))
         array.append((date: nil, num: numOfPerfect))
-        
         return array
     }
 }

@@ -140,7 +140,7 @@ class CameraController: UIViewController, CameraOperatorViewDelegate, CameraScor
     // MARK: - ScoreFrameViewDataSource Functions
     func getSelectedFrame() -> (frame: Int, turn: Int) { return (frame: 0, turn: 0) }
     func getScores(tag: Int) -> GameScore {
-        let score = GameScore()
+        let score = GameScore(gameID: tag)  ////
         let index = tag
         if index >= 0 && index < dataFromCamera.count {
             let num = dataFromCamera[index].count
@@ -150,7 +150,7 @@ class CameraController: UIViewController, CameraOperatorViewDelegate, CameraScor
             if num == 12 {
                 var outputs: [FrameScore] = []
                 for i in 1 ..< num - 1 {
-                    let output =  FrameScore(score: Int(dataFromCamera[index][i]),bonusCount: 0, isSplit: false)
+                    let output =  FrameScore(score: Int(dataFromCamera[index][i]),bonusCount: 0)
                     outputs.append(output)
                     // set data to score
                 }
